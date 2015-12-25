@@ -1,0 +1,9 @@
+<opml version="1.0">
+    <head>
+        <title>Second example opml</title>
+    </head>
+    <body>
+        <outline text="First feed in second example opml" type="rss" xmlUrl="http://opml.go-here.nl/rss5.xml"/>
+        <outline text="Second example feed in the second example opml" type="rss" xmlUrl="http://opml.go-here.nl/rss6.xml"/>
+    </body>
+</opml>

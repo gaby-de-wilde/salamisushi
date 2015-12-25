@@ -1,0 +1,453 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml xmlns:rssowl="http://www.rssowl.org" version="1.1">
+  <head>
+    <title>RSSOwl Subscriptions</title>
+    <dateModified>Sun, 16 Nov 2014 02:28:45 CET</dateModified>
+  </head>
+  <body>
+    <outline text="My Feeds" rssowl:isSet="true" rssowl:id="6">
+      <rssowl:savedsearch name="All News in 'big business'" matchAllConditions="true" rssowl:id="92000">
+        <rssowl:searchcondition>
+          <rssowl:searchspecifier id="0" />
+          <rssowl:searchvalue type="0">
+            <rssowl:location isBin="false" isFolder="true" value="88271" />
+          </rssowl:searchvalue>
+          <rssowl:searchfield id="19" entity="org.rssowl.core.persist.INews" />
+        </rssowl:searchcondition>
+      </rssowl:savedsearch>
+      <outline text="big business" rssowl:isSet="false" rssowl:id="88271">
+        <outline text="ArcelorMittal: Press Releases" xmlUrl="feed://www.arcelormittal.com/rss/enpressreleases.xml" rssowl:id="88273" />
+        <outline text="Royal Dutch Shell plc speeches" xmlUrl="http://rssfeeds.shell.com/shell_speeches" rssowl:id="88329" />
+        <outline text="Royal Dutch Shell plc media releases" xmlUrl="http://rssfeeds.shell.com/shell_media_releases" rssowl:id="88307" />
+        <outline text="Walmartstores.com: News" xmlUrl="feed://walmartstores.com/RSS/News/rss.ashx" rssowl:id="88285" />
+        <outline text="Exxon News" xmlUrl="feed://feed.businesswire.com/rss/exxonmobil/?rss=G1QFDERJXkJeGFtSXw==" rssowl:id="88373" />
+        <outline text="Exxon Mobil Corporation News" xmlUrl="feed://feed.businesswire.com/rss/exxonmobil/?rss=G1QFDERJXkJeEVtRWw==" rssowl:id="88514" />
+        <outline text="Mobil News" xmlUrl="feed://feed.businesswire.com/rss/exxonmobil/?rss=G1QFDERJXkJeGFtSXg==" rssowl:id="88380" />
+        <outline text="ExxonMobil Chemical News" xmlUrl="feed://feed.businesswire.com/rss/exxonmobil/?rss=G1QFDERJXkJeGFtSWQ==" rssowl:id="88413" />
+        <outline text="トヨタ自動車グローバルサイト" xmlUrl="feed://www2.toyota.co.jp/wwwtoyotacojp/cojp/jp/toppage_rss.xml" rssowl:id="90213" />
+        <outline text="BP Investor relations podcast" xmlUrl="feed://www.bp.com/rss/BP_Investor_relations_podcast_9015723.xml" rssowl:id="90385" />
+        <outline text="GE Press Releases" xmlUrl="http://www.genewscenter.com/rss/default.aspx?feedid=%7BE05B7BCC-AA48-48E2-B4AB-2C2A8F98619B%7D" rssowl:id="91016" />
+        <outline text="BP press releases" xmlUrl="feed://www.bp.com/rss/BP_press_releases_2012968.xml" rssowl:id="90391" />
+        <outline text="BP speeches" xmlUrl="feed://www.bp.com/rss/BP_speeches_98.xml" rssowl:id="90403" />
+        <outline text="日本郵政株式会社（お知らせ）" xmlUrl="feed://www.japanpost.jp/rss/information.xml" rssowl:id="90415" />
+        <outline text="日本郵政株式会社（プレスリリース）" xmlUrl="feed://www.japanpost.jp/rss/pressrelease.xml" rssowl:id="90423" />
+        <outline text="AXA - General feed" xmlUrl="feed://www.axa.com/en/rss/general.aspx" rssowl:id="90851" />
+        <outline text="AXA - Podcast in English" xmlUrl="feed://www.axa.com/en/rss/podcast.aspx" rssowl:id="90875" />
+        <outline text="AXA - Agenda" xmlUrl="feed://www.axa.com/en/rss/agenda.aspx" rssowl:id="90890" />
+        <outline text="AXA - Publications" xmlUrl="feed://www.axa.com/en/rss/publications.aspx" rssowl:id="90894" />
+        <outline text="AXA - Press releases" xmlUrl="feed://www.axa.com/en/rss/pr.aspx" rssowl:id="90916" />
+        <outline text="AXA - News and Headlines" xmlUrl="feed://www.axa.com/en/rss/news.aspx" rssowl:id="90921" />
+        <outline text="Chevron Corporation Speeches" xmlUrl="feed://www.chevron.com/news/speeches/articles.rss" rssowl:id="90952" />
+        <outline text="Chevron Corporation Press Releases" xmlUrl="feed://www.chevron.com/news/press/articles.rss" rssowl:id="90968" />
+        <outline text="ING Latest Press Releases" xmlUrl="feed://www.ing.com/group/atom.jsp" rssowl:id="90992" />
+        <outline text="Financial News RSS Feed" xmlUrl="feed://www.ing.com/group/rss-financial.jsp" rssowl:id="91004" />
+        <outline text="Total – News and Press Releases" xmlUrl="feed://www.total.com/FRONT_SITE/CORPORATE/zendMVC/modules/actu-presse/RSS_Actu_ACTUCPEN.xml.php" rssowl:id="91989" />
+        <outline text="ConocoPhillips News Releases" xmlUrl="http://www.conocophillips.com/_layouts/feed.aspx?xsl=1&amp;web=%2FEN%2Fnewsroom%2Fnews%5Ffeeds&amp;page=5bccf700-2965-4cb6-a4dd-a23c31a8d189&amp;wp=3e8a08c5-0ce7-43ef-82b4-290081333f79" rssowl:id="92077" />
+        <outline text="All News" xmlUrl="feed://www.volkswagenag.com/vwag/vwcorp/info_center/en/news/news.rss.xml/feed-0001/index.rss" rssowl:id="92054" />
+        <outline text="BNP Paribas - News -" xmlUrl="feed://www.bnpparibas.com/en/news/rss.asp" rssowl:id="92127" />
+        <outline text="Generali Group Investor Relations" xmlUrl="feed://www.generali.com/generalicom/RSSFeed.do?news.config.id=.2&amp;idLanguage=EN" rssowl:id="92149" />
+        <outline text="Generali Group News" xmlUrl="feed://www.generali.com/generalicom/RSSFeed.do?news.config.id=.1&amp;idLanguage=EN" rssowl:id="92156" />
+        <outline text="Allianz - Company News" xmlUrl="https://www.allianz.com/en/press/news/company_news/index.html?mode=rss2.0" rssowl:id="92240" />
+        <outline text="Allianz - Financial News" xmlUrl="https://www.allianz.com/en/press/news/financial_news/index.html?mode=rss2.0" rssowl:id="92217" />
+        <outline text="Allianz - Business News" xmlUrl="https://www.allianz.com/en/press/news/business_news/index.html?mode=rss2.0" rssowl:id="92263" />
+        <outline text="Allianz - Studies" xmlUrl="https://www.allianz.com/en/press/news/studies/index.html?mode=rss2.0" rssowl:id="92286" />
+        <outline text="Allianz - Commitment News" xmlUrl="https://www.allianz.com/en/press/news/commitment_news/index.html?mode=atom1.0" rssowl:id="92311" />
+        <outline text="AT&amp;T All Categories RSS Feeds" xmlUrl="http://feeds.feedburner.com/AttAllCategoriesRssFeeds" rssowl:id="92351" />
+        <outline text="AT&amp;T Your Podcast Delivered (enhanced)" xmlUrl="feed://att.centralcast.net/rss/getpodcast.aspx?type=itunes" rssowl:id="92393" />
+        <outline text="AT&amp;T Corporate RSS Feeds" xmlUrl="http://feeds.feedburner.com/AttCorporateRssFeeds" rssowl:id="92477" />
+        <outline text="Resultats" xmlUrl="http://www.carrefour.com/cdc/rss/?type=Resultats" rssowl:id="92519" />
+        <outline text="Actualite" xmlUrl="feed://www.carrefour.com/cdc/rss/?type=Actualite" rssowl:id="92563" />
+        <outline text="Ford Motor Company" xmlUrl="feed://corporate.ford.com/servlet/Satellite?pagename=FordCom%2FFmcContentC%2FRSSWrapper&amp;tag=News%20&amp;%20Announcements" rssowl:id="92963" />
+        <outline text="Press Releases" xmlUrl="feed://apps.shareholder.com/rss/rss.aspx?channels=14&amp;companyid=ONE&amp;sh_auth=1200313835%2E0%2E0%2E8febce37a3bb610961d98793fa2ae236" rssowl:id="94249" />
+      </outline>
+    </outline>
+    <outline text="failed" rssowl:isSet="true" rssowl:id="153999" />
+    <outline text="europa" rssowl:isSet="true" rssowl:id="195142">
+      <outline text="Europa" rssowl:isSet="false" rssowl:id="201580">
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=63&amp;lang=FR" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=63&amp;lang=FR" rssowl:id="201581" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=63&amp;lang=EN" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=63&amp;lang=EN" rssowl:id="201582" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=63&amp;lang=DE" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=63&amp;lang=DE" rssowl:id="201583" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=62&amp;lang=PT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=62&amp;lang=PT" rssowl:id="201584" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=62&amp;lang=PL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=62&amp;lang=PL" rssowl:id="201585" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=62&amp;lang=FR" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=62&amp;lang=FR" rssowl:id="201586" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=62&amp;lang=ES" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=62&amp;lang=ES" rssowl:id="201587" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=62&amp;lang=EN" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=62&amp;lang=EN" rssowl:id="201588" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=61&amp;lang=SW" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=61&amp;lang=SW" rssowl:id="201589" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=61&amp;lang=SL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=61&amp;lang=SL" rssowl:id="201590" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=61&amp;lang=SK" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=61&amp;lang=SK" rssowl:id="201591" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=61&amp;lang=RO" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=61&amp;lang=RO" rssowl:id="201592" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=61&amp;lang=PT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=61&amp;lang=PT" rssowl:id="201593" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=61&amp;lang=PL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=61&amp;lang=PL" rssowl:id="201594" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=61&amp;lang=NL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=61&amp;lang=NL" rssowl:id="201595" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=61&amp;lang=MT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=61&amp;lang=MT" rssowl:id="201596" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=61&amp;lang=LV" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=61&amp;lang=LV" rssowl:id="201597" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=61&amp;lang=LT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=61&amp;lang=LT" rssowl:id="201598" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=61&amp;lang=IT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=61&amp;lang=IT" rssowl:id="201599" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=61&amp;lang=HU" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=61&amp;lang=HU" rssowl:id="201600" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=61&amp;lang=FR" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=61&amp;lang=FR" rssowl:id="201601" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=61&amp;lang=FI" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=61&amp;lang=FI" rssowl:id="201602" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=61&amp;lang=ET" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=61&amp;lang=ET" rssowl:id="201603" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=61&amp;lang=ES" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=61&amp;lang=ES" rssowl:id="201604" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=61&amp;lang=EN" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=61&amp;lang=EN" rssowl:id="201605" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=61&amp;lang=EL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=61&amp;lang=EL" rssowl:id="201606" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=61&amp;lang=DE" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=61&amp;lang=DE" rssowl:id="201607" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=61&amp;lang=DA" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=61&amp;lang=DA" rssowl:id="201608" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=61&amp;lang=CS" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=61&amp;lang=CS" rssowl:id="201609" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=61&amp;lang=BG" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=61&amp;lang=BG" rssowl:id="201610" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=57&amp;lang=FR" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=57&amp;lang=FR" rssowl:id="201611" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=57&amp;lang=EN" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=57&amp;lang=EN" rssowl:id="201612" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=57&amp;lang=DE" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=57&amp;lang=DE" rssowl:id="201613" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=56&amp;lang=FR" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=56&amp;lang=FR" rssowl:id="201614" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=56&amp;lang=ES" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=56&amp;lang=ES" rssowl:id="201615" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=56&amp;lang=EN" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=56&amp;lang=EN" rssowl:id="201616" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=56&amp;lang=DE" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=56&amp;lang=DE" rssowl:id="201617" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=55&amp;lang=EN" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=55&amp;lang=EN" rssowl:id="201618" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=53&amp;lang=PL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=53&amp;lang=PL" rssowl:id="201619" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=53&amp;lang=FR" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=53&amp;lang=FR" rssowl:id="201620" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=53&amp;lang=EN" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=53&amp;lang=EN" rssowl:id="201621" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=53&amp;lang=EL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=53&amp;lang=EL" rssowl:id="201622" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=51&amp;lang=SL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=51&amp;lang=SL" rssowl:id="201623" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=51&amp;lang=SK" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=51&amp;lang=SK" rssowl:id="201624" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=51&amp;lang=RO" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=51&amp;lang=RO" rssowl:id="201625" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=51&amp;lang=PT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=51&amp;lang=PT" rssowl:id="201626" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=51&amp;lang=PL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=51&amp;lang=PL" rssowl:id="201627" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=51&amp;lang=NL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=51&amp;lang=NL" rssowl:id="201628" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=51&amp;lang=IT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=51&amp;lang=IT" rssowl:id="201629" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=51&amp;lang=HU" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=51&amp;lang=HU" rssowl:id="201630" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=51&amp;lang=FR" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=51&amp;lang=FR" rssowl:id="201631" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=51&amp;lang=ES" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=51&amp;lang=ES" rssowl:id="201632" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=51&amp;lang=EN" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=51&amp;lang=EN" rssowl:id="201633" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=51&amp;lang=EL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=51&amp;lang=EL" rssowl:id="201634" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=51&amp;lang=DE" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=51&amp;lang=DE" rssowl:id="201635" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=51&amp;lang=CS" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=51&amp;lang=CS" rssowl:id="201636" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=51&amp;lang=BG" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=51&amp;lang=BG" rssowl:id="201637" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=44&amp;lang=SW" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=44&amp;lang=SW" rssowl:id="201638" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=44&amp;lang=SL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=44&amp;lang=SL" rssowl:id="201639" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=44&amp;lang=SK" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=44&amp;lang=SK" rssowl:id="201640" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=44&amp;lang=RO" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=44&amp;lang=RO" rssowl:id="201641" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=44&amp;lang=PT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=44&amp;lang=PT" rssowl:id="201642" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=44&amp;lang=PL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=44&amp;lang=PL" rssowl:id="201643" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=44&amp;lang=NL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=44&amp;lang=NL" rssowl:id="201644" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=44&amp;lang=MT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=44&amp;lang=MT" rssowl:id="201645" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=44&amp;lang=LV" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=44&amp;lang=LV" rssowl:id="201646" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=44&amp;lang=LT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=44&amp;lang=LT" rssowl:id="201647" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=44&amp;lang=IT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=44&amp;lang=IT" rssowl:id="201648" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=44&amp;lang=HU" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=44&amp;lang=HU" rssowl:id="201649" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=44&amp;lang=FR" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=44&amp;lang=FR" rssowl:id="201650" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=44&amp;lang=FI" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=44&amp;lang=FI" rssowl:id="201651" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=44&amp;lang=ET" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=44&amp;lang=ET" rssowl:id="201652" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=44&amp;lang=ES" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=44&amp;lang=ES" rssowl:id="201653" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=44&amp;lang=EN" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=44&amp;lang=EN" rssowl:id="201654" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=44&amp;lang=EL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=44&amp;lang=EL" rssowl:id="201655" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=44&amp;lang=DE" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=44&amp;lang=DE" rssowl:id="201656" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=44&amp;lang=DA" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=44&amp;lang=DA" rssowl:id="201657" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=44&amp;lang=CS" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=44&amp;lang=CS" rssowl:id="201658" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=44&amp;lang=BG" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=44&amp;lang=BG" rssowl:id="201659" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=34&amp;lang=EN" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=34&amp;lang=EN" rssowl:id="201660" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=32&amp;lang=EN" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=32&amp;lang=EN" rssowl:id="201661" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=26&amp;lang=EN" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=26&amp;lang=EN" rssowl:id="201662" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=163&amp;lang=SW" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=163&amp;lang=SW" rssowl:id="201663" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=163&amp;lang=SL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=163&amp;lang=SL" rssowl:id="201664" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=163&amp;lang=SK" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=163&amp;lang=SK" rssowl:id="201665" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=163&amp;lang=RO" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=163&amp;lang=RO" rssowl:id="201666" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=163&amp;lang=PT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=163&amp;lang=PT" rssowl:id="201667" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=163&amp;lang=PL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=163&amp;lang=PL" rssowl:id="201668" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=163&amp;lang=NL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=163&amp;lang=NL" rssowl:id="201669" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=163&amp;lang=MT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=163&amp;lang=MT" rssowl:id="201670" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=163&amp;lang=LV" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=163&amp;lang=LV" rssowl:id="201671" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=163&amp;lang=LT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=163&amp;lang=LT" rssowl:id="201672" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=163&amp;lang=IT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=163&amp;lang=IT" rssowl:id="201673" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=163&amp;lang=HU" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=163&amp;lang=HU" rssowl:id="201674" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=163&amp;lang=FR" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=163&amp;lang=FR" rssowl:id="201675" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=163&amp;lang=FI" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=163&amp;lang=FI" rssowl:id="201676" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=163&amp;lang=ET" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=163&amp;lang=ET" rssowl:id="201677" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=163&amp;lang=ES" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=163&amp;lang=ES" rssowl:id="201678" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=163&amp;lang=EN" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=163&amp;lang=EN" rssowl:id="201679" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=163&amp;lang=EL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=163&amp;lang=EL" rssowl:id="201680" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=163&amp;lang=DE" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=163&amp;lang=DE" rssowl:id="201681" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=163&amp;lang=DA" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=163&amp;lang=DA" rssowl:id="201682" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=163&amp;lang=CS" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=163&amp;lang=CS" rssowl:id="201683" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=163&amp;lang=BG" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=163&amp;lang=BG" rssowl:id="201684" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=162&amp;lang=FR" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=162&amp;lang=FR" rssowl:id="201685" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=162&amp;lang=EN" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=162&amp;lang=EN" rssowl:id="201686" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=162&amp;lang=DE" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=162&amp;lang=DE" rssowl:id="201687" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=161&amp;lang=SW" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=161&amp;lang=SW" rssowl:id="201688" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=161&amp;lang=SL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=161&amp;lang=SL" rssowl:id="201689" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=161&amp;lang=SK" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=161&amp;lang=SK" rssowl:id="201690" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=161&amp;lang=RO" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=161&amp;lang=RO" rssowl:id="201691" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=161&amp;lang=PT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=161&amp;lang=PT" rssowl:id="201692" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=161&amp;lang=PL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=161&amp;lang=PL" rssowl:id="201693" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=161&amp;lang=NL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=161&amp;lang=NL" rssowl:id="201694" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=161&amp;lang=MT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=161&amp;lang=MT" rssowl:id="201695" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=161&amp;lang=LV" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=161&amp;lang=LV" rssowl:id="201696" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=161&amp;lang=LT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=161&amp;lang=LT" rssowl:id="201697" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=161&amp;lang=IT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=161&amp;lang=IT" rssowl:id="201698" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=161&amp;lang=HU" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=161&amp;lang=HU" rssowl:id="201699" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=161&amp;lang=FR" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=161&amp;lang=FR" rssowl:id="201700" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=161&amp;lang=FI" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=161&amp;lang=FI" rssowl:id="201701" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=161&amp;lang=ET" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=161&amp;lang=ET" rssowl:id="201702" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=161&amp;lang=ES" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=161&amp;lang=ES" rssowl:id="201703" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=161&amp;lang=EN" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=161&amp;lang=EN" rssowl:id="201704" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=161&amp;lang=EL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=161&amp;lang=EL" rssowl:id="201705" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=161&amp;lang=DE" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=161&amp;lang=DE" rssowl:id="201706" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=161&amp;lang=DA" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=161&amp;lang=DA" rssowl:id="201707" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=161&amp;lang=CS" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=161&amp;lang=CS" rssowl:id="201708" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=161&amp;lang=BG" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=161&amp;lang=BG" rssowl:id="201709" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=160&amp;lang=FR" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=160&amp;lang=FR" rssowl:id="201710" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=160&amp;lang=EN" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=160&amp;lang=EN" rssowl:id="201711" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=160&amp;lang=DE" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=160&amp;lang=DE" rssowl:id="201712" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=158&amp;lang=SW" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=158&amp;lang=SW" rssowl:id="201713" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=158&amp;lang=SL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=158&amp;lang=SL" rssowl:id="201714" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=158&amp;lang=SK" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=158&amp;lang=SK" rssowl:id="201715" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=158&amp;lang=RO" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=158&amp;lang=RO" rssowl:id="201716" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=158&amp;lang=PT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=158&amp;lang=PT" rssowl:id="201717" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=158&amp;lang=PL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=158&amp;lang=PL" rssowl:id="201718" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=158&amp;lang=NL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=158&amp;lang=NL" rssowl:id="201719" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=158&amp;lang=MT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=158&amp;lang=MT" rssowl:id="201720" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=158&amp;lang=LV" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=158&amp;lang=LV" rssowl:id="201721" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=158&amp;lang=LT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=158&amp;lang=LT" rssowl:id="201722" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=158&amp;lang=IT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=158&amp;lang=IT" rssowl:id="201723" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=158&amp;lang=HU" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=158&amp;lang=HU" rssowl:id="201724" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=158&amp;lang=FR" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=158&amp;lang=FR" rssowl:id="201725" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=158&amp;lang=FI" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=158&amp;lang=FI" rssowl:id="201726" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=158&amp;lang=ET" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=158&amp;lang=ET" rssowl:id="201727" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=158&amp;lang=ES" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=158&amp;lang=ES" rssowl:id="201728" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=158&amp;lang=EN" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=158&amp;lang=EN" rssowl:id="201729" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=158&amp;lang=EL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=158&amp;lang=EL" rssowl:id="201730" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=158&amp;lang=DE" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=158&amp;lang=DE" rssowl:id="201731" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=158&amp;lang=DA" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=158&amp;lang=DA" rssowl:id="201732" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=158&amp;lang=CS" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=158&amp;lang=CS" rssowl:id="201733" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=158&amp;lang=BG" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=158&amp;lang=BG" rssowl:id="201734" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=157&amp;lang=SW" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=157&amp;lang=SW" rssowl:id="201735" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=157&amp;lang=SL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=157&amp;lang=SL" rssowl:id="201736" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=157&amp;lang=SK" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=157&amp;lang=SK" rssowl:id="201737" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=157&amp;lang=RO" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=157&amp;lang=RO" rssowl:id="201738" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=157&amp;lang=PT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=157&amp;lang=PT" rssowl:id="201739" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=157&amp;lang=PL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=157&amp;lang=PL" rssowl:id="201740" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=157&amp;lang=NL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=157&amp;lang=NL" rssowl:id="201741" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=157&amp;lang=MT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=157&amp;lang=MT" rssowl:id="201742" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=157&amp;lang=LV" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=157&amp;lang=LV" rssowl:id="201743" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=157&amp;lang=LT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=157&amp;lang=LT" rssowl:id="201744" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=157&amp;lang=IT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=157&amp;lang=IT" rssowl:id="201745" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=157&amp;lang=HU" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=157&amp;lang=HU" rssowl:id="201746" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=157&amp;lang=FR" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=157&amp;lang=FR" rssowl:id="201747" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=157&amp;lang=FI" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=157&amp;lang=FI" rssowl:id="201748" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=157&amp;lang=ET" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=157&amp;lang=ET" rssowl:id="201749" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=157&amp;lang=ES" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=157&amp;lang=ES" rssowl:id="201750" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=157&amp;lang=EN" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=157&amp;lang=EN" rssowl:id="201751" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=157&amp;lang=EL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=157&amp;lang=EL" rssowl:id="201752" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=157&amp;lang=DE" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=157&amp;lang=DE" rssowl:id="201753" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=157&amp;lang=DA" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=157&amp;lang=DA" rssowl:id="201754" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=157&amp;lang=CS" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=157&amp;lang=CS" rssowl:id="201755" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=157&amp;lang=BG" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=157&amp;lang=BG" rssowl:id="201756" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=156&amp;lang=FR" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=156&amp;lang=FR" rssowl:id="201757" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=156&amp;lang=EN" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=156&amp;lang=EN" rssowl:id="201758" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=156&amp;lang=DE" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=156&amp;lang=DE" rssowl:id="201759" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=156&amp;lang=BG" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=156&amp;lang=BG" rssowl:id="201760" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=155&amp;lang=SW" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=155&amp;lang=SW" rssowl:id="201761" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=155&amp;lang=SL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=155&amp;lang=SL" rssowl:id="201762" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=155&amp;lang=SK" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=155&amp;lang=SK" rssowl:id="201763" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=155&amp;lang=RO" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=155&amp;lang=RO" rssowl:id="201764" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=155&amp;lang=PT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=155&amp;lang=PT" rssowl:id="201765" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=155&amp;lang=PL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=155&amp;lang=PL" rssowl:id="201766" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=155&amp;lang=NL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=155&amp;lang=NL" rssowl:id="201767" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=155&amp;lang=MT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=155&amp;lang=MT" rssowl:id="201768" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=155&amp;lang=LV" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=155&amp;lang=LV" rssowl:id="201769" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=155&amp;lang=LT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=155&amp;lang=LT" rssowl:id="201770" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=155&amp;lang=IT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=155&amp;lang=IT" rssowl:id="201771" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=155&amp;lang=HU" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=155&amp;lang=HU" rssowl:id="201772" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=155&amp;lang=FR" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=155&amp;lang=FR" rssowl:id="201773" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=155&amp;lang=FI" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=155&amp;lang=FI" rssowl:id="201774" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=155&amp;lang=ET" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=155&amp;lang=ET" rssowl:id="201775" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=155&amp;lang=ES" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=155&amp;lang=ES" rssowl:id="201776" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=155&amp;lang=EN" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=155&amp;lang=EN" rssowl:id="201777" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=155&amp;lang=EL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=155&amp;lang=EL" rssowl:id="201778" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=155&amp;lang=DE" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=155&amp;lang=DE" rssowl:id="201779" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=155&amp;lang=DA" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=155&amp;lang=DA" rssowl:id="201780" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=155&amp;lang=CS" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=155&amp;lang=CS" rssowl:id="201781" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=155&amp;lang=BG" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=155&amp;lang=BG" rssowl:id="201782" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=152&amp;lang=SW" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=152&amp;lang=SW" rssowl:id="201783" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=152&amp;lang=SL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=152&amp;lang=SL" rssowl:id="201784" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=152&amp;lang=SK" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=152&amp;lang=SK" rssowl:id="201785" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=152&amp;lang=RO" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=152&amp;lang=RO" rssowl:id="201786" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=152&amp;lang=PT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=152&amp;lang=PT" rssowl:id="201787" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=152&amp;lang=PL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=152&amp;lang=PL" rssowl:id="201788" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=152&amp;lang=NL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=152&amp;lang=NL" rssowl:id="201789" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=152&amp;lang=MT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=152&amp;lang=MT" rssowl:id="201790" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=152&amp;lang=LV" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=152&amp;lang=LV" rssowl:id="201791" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=152&amp;lang=LT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=152&amp;lang=LT" rssowl:id="201792" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=152&amp;lang=IT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=152&amp;lang=IT" rssowl:id="201793" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=152&amp;lang=HU" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=152&amp;lang=HU" rssowl:id="201794" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=152&amp;lang=FR" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=152&amp;lang=FR" rssowl:id="201795" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=152&amp;lang=FI" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=152&amp;lang=FI" rssowl:id="201796" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=152&amp;lang=ET" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=152&amp;lang=ET" rssowl:id="201797" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=152&amp;lang=ES" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=152&amp;lang=ES" rssowl:id="201798" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=152&amp;lang=EN" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=152&amp;lang=EN" rssowl:id="201799" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=152&amp;lang=EL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=152&amp;lang=EL" rssowl:id="201800" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=152&amp;lang=DE" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=152&amp;lang=DE" rssowl:id="201801" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=152&amp;lang=DA" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=152&amp;lang=DA" rssowl:id="201802" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=152&amp;lang=CS" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=152&amp;lang=CS" rssowl:id="201803" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=152&amp;lang=BG" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=152&amp;lang=BG" rssowl:id="201804" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=151&amp;lang=SW" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=151&amp;lang=SW" rssowl:id="201805" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=151&amp;lang=MT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=151&amp;lang=MT" rssowl:id="201806" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=151&amp;lang=FR" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=151&amp;lang=FR" rssowl:id="201807" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=151&amp;lang=FI" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=151&amp;lang=FI" rssowl:id="201808" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=151&amp;lang=EN" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=151&amp;lang=EN" rssowl:id="201809" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=151&amp;lang=DE" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=151&amp;lang=DE" rssowl:id="201810" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=150&amp;lang=SW" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=150&amp;lang=SW" rssowl:id="201811" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=150&amp;lang=SL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=150&amp;lang=SL" rssowl:id="201812" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=150&amp;lang=SK" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=150&amp;lang=SK" rssowl:id="201813" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=150&amp;lang=RO" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=150&amp;lang=RO" rssowl:id="201814" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=150&amp;lang=PT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=150&amp;lang=PT" rssowl:id="201815" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=150&amp;lang=PL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=150&amp;lang=PL" rssowl:id="201816" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=150&amp;lang=NL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=150&amp;lang=NL" rssowl:id="201817" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=150&amp;lang=MT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=150&amp;lang=MT" rssowl:id="201818" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=150&amp;lang=LV" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=150&amp;lang=LV" rssowl:id="201819" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=150&amp;lang=LT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=150&amp;lang=LT" rssowl:id="201820" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=150&amp;lang=IT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=150&amp;lang=IT" rssowl:id="201821" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=150&amp;lang=HU" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=150&amp;lang=HU" rssowl:id="201822" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=150&amp;lang=FR" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=150&amp;lang=FR" rssowl:id="201823" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=150&amp;lang=FI" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=150&amp;lang=FI" rssowl:id="201824" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=150&amp;lang=ET" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=150&amp;lang=ET" rssowl:id="201825" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=150&amp;lang=ES" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=150&amp;lang=ES" rssowl:id="201826" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=150&amp;lang=EN" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=150&amp;lang=EN" rssowl:id="201827" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=150&amp;lang=EL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=150&amp;lang=EL" rssowl:id="201828" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=150&amp;lang=DE" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=150&amp;lang=DE" rssowl:id="201829" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=150&amp;lang=DA" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=150&amp;lang=DA" rssowl:id="201830" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=150&amp;lang=CS" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=150&amp;lang=CS" rssowl:id="201831" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=150&amp;lang=BG" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=150&amp;lang=BG" rssowl:id="201832" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=149&amp;lang=FR" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=149&amp;lang=FR" rssowl:id="201833" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=149&amp;lang=EN" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=149&amp;lang=EN" rssowl:id="201834" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=149&amp;lang=DE" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=149&amp;lang=DE" rssowl:id="201835" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=148&amp;lang=FR" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=148&amp;lang=FR" rssowl:id="201836" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=148&amp;lang=EN" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=148&amp;lang=EN" rssowl:id="201837" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=148&amp;lang=DE" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=148&amp;lang=DE" rssowl:id="201838" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=147&amp;lang=FR" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=147&amp;lang=FR" rssowl:id="201839" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=147&amp;lang=EN" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=147&amp;lang=EN" rssowl:id="201840" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=147&amp;lang=DE" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=147&amp;lang=DE" rssowl:id="201841" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=147&amp;lang=DA" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=147&amp;lang=DA" rssowl:id="201842" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=146&amp;lang=SW" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=146&amp;lang=SW" rssowl:id="201843" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=146&amp;lang=SL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=146&amp;lang=SL" rssowl:id="201844" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=146&amp;lang=SK" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=146&amp;lang=SK" rssowl:id="201845" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=146&amp;lang=RO" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=146&amp;lang=RO" rssowl:id="201846" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=146&amp;lang=PT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=146&amp;lang=PT" rssowl:id="201847" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=146&amp;lang=PL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=146&amp;lang=PL" rssowl:id="201848" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=146&amp;lang=NL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=146&amp;lang=NL" rssowl:id="201849" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=146&amp;lang=MT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=146&amp;lang=MT" rssowl:id="201850" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=146&amp;lang=LV" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=146&amp;lang=LV" rssowl:id="201851" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=146&amp;lang=LT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=146&amp;lang=LT" rssowl:id="201852" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=146&amp;lang=IT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=146&amp;lang=IT" rssowl:id="201853" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=146&amp;lang=HU" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=146&amp;lang=HU" rssowl:id="201854" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=146&amp;lang=FR" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=146&amp;lang=FR" rssowl:id="201855" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=146&amp;lang=FI" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=146&amp;lang=FI" rssowl:id="201856" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=146&amp;lang=ET" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=146&amp;lang=ET" rssowl:id="201857" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=146&amp;lang=ES" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=146&amp;lang=ES" rssowl:id="201858" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=146&amp;lang=EN" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=146&amp;lang=EN" rssowl:id="201859" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=146&amp;lang=EL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=146&amp;lang=EL" rssowl:id="201860" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=146&amp;lang=DE" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=146&amp;lang=DE" rssowl:id="201861" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=146&amp;lang=DA" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=146&amp;lang=DA" rssowl:id="201862" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=146&amp;lang=CS" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=146&amp;lang=CS" rssowl:id="201863" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=146&amp;lang=BG" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=146&amp;lang=BG" rssowl:id="201864" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=145&amp;lang=FR" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=145&amp;lang=FR" rssowl:id="201865" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=145&amp;lang=EN" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=145&amp;lang=EN" rssowl:id="201866" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=145&amp;lang=DE" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=145&amp;lang=DE" rssowl:id="201867" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=144&amp;lang=SW" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=144&amp;lang=SW" rssowl:id="201868" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=144&amp;lang=SL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=144&amp;lang=SL" rssowl:id="201869" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=144&amp;lang=SK" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=144&amp;lang=SK" rssowl:id="201870" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=144&amp;lang=RO" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=144&amp;lang=RO" rssowl:id="201871" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=144&amp;lang=PT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=144&amp;lang=PT" rssowl:id="201872" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=144&amp;lang=PL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=144&amp;lang=PL" rssowl:id="201873" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=144&amp;lang=NL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=144&amp;lang=NL" rssowl:id="201874" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=144&amp;lang=MT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=144&amp;lang=MT" rssowl:id="201875" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=144&amp;lang=LV" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=144&amp;lang=LV" rssowl:id="201876" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=144&amp;lang=LT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=144&amp;lang=LT" rssowl:id="201877" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=144&amp;lang=IT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=144&amp;lang=IT" rssowl:id="201878" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=144&amp;lang=HU" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=144&amp;lang=HU" rssowl:id="201879" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=144&amp;lang=FR" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=144&amp;lang=FR" rssowl:id="201880" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=144&amp;lang=FI" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=144&amp;lang=FI" rssowl:id="201881" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=144&amp;lang=ET" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=144&amp;lang=ET" rssowl:id="201882" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=144&amp;lang=ES" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=144&amp;lang=ES" rssowl:id="201883" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=144&amp;lang=EN" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=144&amp;lang=EN" rssowl:id="201884" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=144&amp;lang=EL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=144&amp;lang=EL" rssowl:id="201885" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=144&amp;lang=DE" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=144&amp;lang=DE" rssowl:id="201886" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=144&amp;lang=DA" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=144&amp;lang=DA" rssowl:id="201887" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=144&amp;lang=CS" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=144&amp;lang=CS" rssowl:id="201888" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=144&amp;lang=BG" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=144&amp;lang=BG" rssowl:id="201889" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=143&amp;lang=EN" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=143&amp;lang=EN" rssowl:id="201890" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=142&amp;lang=SW" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=142&amp;lang=SW" rssowl:id="201891" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=142&amp;lang=SK" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=142&amp;lang=SK" rssowl:id="201892" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=142&amp;lang=RO" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=142&amp;lang=RO" rssowl:id="201893" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=142&amp;lang=PL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=142&amp;lang=PL" rssowl:id="201894" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=142&amp;lang=NL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=142&amp;lang=NL" rssowl:id="201895" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=142&amp;lang=IT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=142&amp;lang=IT" rssowl:id="201896" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=142&amp;lang=FR" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=142&amp;lang=FR" rssowl:id="201897" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=142&amp;lang=FI" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=142&amp;lang=FI" rssowl:id="201898" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=142&amp;lang=ES" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=142&amp;lang=ES" rssowl:id="201899" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=142&amp;lang=EN" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=142&amp;lang=EN" rssowl:id="201900" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=142&amp;lang=EL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=142&amp;lang=EL" rssowl:id="201901" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=142&amp;lang=DE" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=142&amp;lang=DE" rssowl:id="201902" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=142&amp;lang=CS" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=142&amp;lang=CS" rssowl:id="201903" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=142&amp;lang=BG" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=142&amp;lang=BG" rssowl:id="201904" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=141&amp;lang=EN" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=141&amp;lang=EN" rssowl:id="201905" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=139&amp;lang=SW" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=139&amp;lang=SW" rssowl:id="201906" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=139&amp;lang=SL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=139&amp;lang=SL" rssowl:id="201907" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=139&amp;lang=SK" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=139&amp;lang=SK" rssowl:id="201908" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=139&amp;lang=RO" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=139&amp;lang=RO" rssowl:id="201909" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=139&amp;lang=PT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=139&amp;lang=PT" rssowl:id="201910" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=139&amp;lang=PL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=139&amp;lang=PL" rssowl:id="201911" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=139&amp;lang=NL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=139&amp;lang=NL" rssowl:id="201912" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=139&amp;lang=MT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=139&amp;lang=MT" rssowl:id="201913" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=139&amp;lang=LV" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=139&amp;lang=LV" rssowl:id="201914" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=139&amp;lang=LT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=139&amp;lang=LT" rssowl:id="201915" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=139&amp;lang=IT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=139&amp;lang=IT" rssowl:id="201916" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=139&amp;lang=HU" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=139&amp;lang=HU" rssowl:id="201917" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=139&amp;lang=FR" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=139&amp;lang=FR" rssowl:id="201918" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=139&amp;lang=FI" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=139&amp;lang=FI" rssowl:id="201919" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=139&amp;lang=ET" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=139&amp;lang=ET" rssowl:id="201920" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=139&amp;lang=ES" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=139&amp;lang=ES" rssowl:id="201921" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=139&amp;lang=EN" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=139&amp;lang=EN" rssowl:id="201922" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=139&amp;lang=EL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=139&amp;lang=EL" rssowl:id="201923" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=139&amp;lang=DE" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=139&amp;lang=DE" rssowl:id="201924" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=139&amp;lang=DA" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=139&amp;lang=DA" rssowl:id="201925" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=139&amp;lang=CS" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=139&amp;lang=CS" rssowl:id="201926" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=139&amp;lang=BG" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=139&amp;lang=BG" rssowl:id="201927" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=138&amp;lang=SW" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=138&amp;lang=SW" rssowl:id="201928" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=138&amp;lang=SL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=138&amp;lang=SL" rssowl:id="201929" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=138&amp;lang=SK" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=138&amp;lang=SK" rssowl:id="201930" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=138&amp;lang=RO" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=138&amp;lang=RO" rssowl:id="201931" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=138&amp;lang=PT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=138&amp;lang=PT" rssowl:id="201932" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=138&amp;lang=PL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=138&amp;lang=PL" rssowl:id="201933" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=138&amp;lang=NL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=138&amp;lang=NL" rssowl:id="201934" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=138&amp;lang=MT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=138&amp;lang=MT" rssowl:id="201935" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=138&amp;lang=LV" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=138&amp;lang=LV" rssowl:id="201936" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=138&amp;lang=LT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=138&amp;lang=LT" rssowl:id="201937" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=138&amp;lang=IT" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=138&amp;lang=IT" rssowl:id="201938" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=138&amp;lang=HU" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=138&amp;lang=HU" rssowl:id="201939" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=138&amp;lang=FR" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=138&amp;lang=FR" rssowl:id="201940" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=138&amp;lang=FI" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=138&amp;lang=FI" rssowl:id="201941" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=138&amp;lang=ET" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=138&amp;lang=ET" rssowl:id="201942" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=138&amp;lang=ES" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=138&amp;lang=ES" rssowl:id="201943" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=138&amp;lang=EN" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=138&amp;lang=EN" rssowl:id="201944" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=138&amp;lang=EL" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=138&amp;lang=EL" rssowl:id="201945" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=138&amp;lang=DE" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=138&amp;lang=DE" rssowl:id="201946" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=138&amp;lang=DA" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=138&amp;lang=DA" rssowl:id="201947" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=138&amp;lang=CS" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=138&amp;lang=CS" rssowl:id="201948" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=138&amp;lang=BG" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=138&amp;lang=BG" rssowl:id="201949" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=134&amp;lang=EN" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=134&amp;lang=EN" rssowl:id="201950" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=128&amp;lang=EN" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=128&amp;lang=EN" rssowl:id="201951" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=126&amp;lang=EN" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=126&amp;lang=EN" rssowl:id="201952" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=124&amp;lang=EN" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=124&amp;lang=EN" rssowl:id="201953" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=123&amp;lang=EN" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=123&amp;lang=EN" rssowl:id="201954" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=121&amp;lang=FR" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=121&amp;lang=FR" rssowl:id="201955" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=121&amp;lang=EN" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=121&amp;lang=EN" rssowl:id="201956" />
+        <outline text="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=120&amp;lang=EN" xmlUrl="http://europa.eu/rapid/syndication/QuickRSSAction.do?id=120&amp;lang=EN" rssowl:id="201957" />
+      </outline>
+    </outline>
+    <rssowl:label id="2" name="Work" order="1" color="200,118,10" />
+    <rssowl:label id="1" name="Important" order="0" color="163,21,2" />
+    <rssowl:label id="4" name="To Do" order="3" color="92,101,126" />
+    <rssowl:label id="3" name="Personal" order="2" color="82,92,58" />
+    <rssowl:label id="5" name="Later" order="4" color="82,16,0" />
+  </body>
+</opml>
+

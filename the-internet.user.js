@@ -1,9 +1,9 @@
 ﻿// ==UserScript==
-// @name        The internet
-// @namespace   newwfksdafsffewfwsfnsddsfdasfwej
+// @name        The internet Beta
+// @namespace   AggregatorByGabyDeWilde
 // @include     http://opml.go-here.nl/internet.html
-// @include     http://salamisushi.esy.es/
-// @version     0.041
+// @include     http://opml.go-here.nl/configuration.html
+// @version     0.048
 // @grant       GM_xmlhttpRequest
 // @grant       GM_getValue
 // @grant       GM_setValue
@@ -13,397 +13,69 @@
 // @updateURL   http://opml.go-here.nl/the-internet.meta.js
 // ==/UserScript==
 
+// keep track of used variables
+
 window.variables = Object.keys( window );
 
-// manage legacy conflicts
+// abstract
 
-oldestCompatibleVersion = '0.029';
-if(oldestCompatibleVersion != GM_getValue('version', '0.029' ) ){
-	var keys = GM_listValues();
-	for (var i=0, key=null; key=keys[i]; i++){ GM_deleteValue(key);	}
-	localStorage.clear();
-	GM_setValue('version', '0.029');
-	alert('all stored data has been errased to avoid version conflict');
-}
+window.id=x=>document.getElementById(x)
 
-///////////////// BAD WORDS AND BAD WORD COMBINATIONS //////////////
+// Manage stored arrays
 
-// actors, journalists, fictional/imaginary
+window.setValue = (a,b) => !GM_setValue(a,b.join(','));
+window.getValue = (a,b) => GM_getValue(a,b).split(',');
 
-window.badwords = "snoop dogg,jeremy clarkson,al pacino,alan arkin,alec guinness,anthony hopkins,ben kingsley,benicio del toro,bill murray,brad pitt,burt lancaster,cary grant,charles chaplin,charlton heston,christian bale,christoph waltz,christopher plummer,christopher walken,clark gable,clint eastwood,colin firth,daniel day-lewis,denzel washington,don cheadle,dustin hoffman,ed harris,edward norton,f. murray abraham,forest whitaker,gary cooper,gary oldman,gene hackman,gene kelly,geoffrey rush,george c. scott,george clooney,gregory peck,harrison ford,harvey keitel,heath ledger,henry fonda,hugh jackman,humphrey bogart,ian mckellen,jack lemmon,james cagney,james dean,james stewart,jamie foxx,jason robards,javier bardem,jeff bridges,jeremy irons,jim carrey,joaquin phoenix,joe pesci,john hurt,john malkovich,john wayne,johnny depp,jon voight,kevin kline,kevin spacey,kirk douglas,laurence olivier,leonardo dicaprio,liam neeson,marlon brando,martin sheen,matt damon,matthew mcconaughey,michael caine,michael douglas,morgan freeman,orson welles,paul newman,peter finch,peter o'toole,peter sellers,philip seymour hoffman,ralph fiennes,richard burton,robert de niro,robert downey,robert duvall,robert mitchum,robert redford,robin williams,russell crowe,samuel l. jackson,sean connery,sean penn,sidney poitier,spencer tracy,steve mcqueen,tim robbins,tom cruise,tom hanks,tommy lee jones,will smith,william holden,rihanna,kardashian,kardashians,cosby,eric garner,";
+// remove installation instructions
 
-// football, other balls and real sports
+id('install').innerHTML = '';
 
-window.badwords += "football,soccer,baseball,honkbal,footbal,footballer,footballers,as roma,feyenoord,dynamo kyiv,psv arsenal,ajax,manchester united,liverpool,juventus,ac milan,bayern münchen,fc barcelona,real madrid,road accident,van gaal,manchester united,dallas cowboys,philadelphia eagles,super cup,world cup,davis cup,europa cup,tour de france,olympic,olympics,indycar,quarterback,fifa,fantasy sports,golf club,";
+// manage configuration
+	
+(window.urlArrays = ['unsubscribe','rss_blacklist','rss_suspended','opml','rss'])
+.forEach( function(x){ window[x] = getValue(x, '')});
 
-// gaming nonsense
+if( location.href == (confLink = "http://opml.go-here.nl/configuration.html") ){ 
 
-window.badwords += "games,gamer,gamers,gaming,players,player,multiplayer,gameplay,atari,playstation,bethesda,bioware,black isle,blizzard,brøderbund,bungie,capcom,ea,ea,enix,epic games,game freak,hal laboratory,harmonix,id software,infinity ward,insomniac games,intelligent systems,irrational games,konami,level 5,looking glass studios,lucasarts,maxis,microprose,midway,namco,naughty dog,neversoft,nintendo,origin systems,polyphony digital,popcap,relic entertainment,retro studios,rockstar north,sce,sega,sierra,snk,sonic,squaresoft,thatgamecompany,treasure,ubisoft,westwood,xbox,x box,call of duty,";
+	// load old configuration into the form
+	
+	id('configuration').value = GM_getValue('configuration', '');
+	window.urlArrays.forEach(function(x){id(x).value = window[x].length > 0?window[x].join('\n'):""});
+		
+	// update configuration if form is submitted
+	
+	setInterval(function(){	
+		if(id('submitCheck').value=="checked"){
+			id('submitCheck').value = "unchecked";
+			GM_setValue( 'configuration', id('configuration').value );
+			window.urlArrays.forEach(function(x){setValue(x, id(x).value.split('\n'))})
+			if(confirm("\n\n      Settings saved!   \n\nProceed to aggregator?\n\n")){
+				location.href = "http://opml.go-here.nl/internet.html"
+			}
+		}
+	},50)
 
-// multinational attention whoring
+}else{
+	
+// if there is no configuration load configuration page
 
-window.badwords += "zuckerberg,facebook,nokia,windows,microsoft,comcast,super bowl,supper bowl,virgin galactic,steve jobs,google,intel,samsung,smartphone,smartphones,twitter,whatsapp,twitter,tweets,dell,yahoo,ikea,adobe,chromebook,cooler master,amazon,wikipedia,social media,apple,android,netflix,iphone,android,osx,os x,barbie,uber,snapchat,tiger woods,playboy,fox news,disney,";
+if(GM_getValue('configuration', '')==''){ location.href = confLink }
+	
+// parse configuration object
 
-// porn, sex, nudity and gay topics
+window.pref = JSON.parse(GM_getValue('configuration', ''));
+delete window.urlArrays;
 
-window.badwords += "porn,porno,pornography,sex,penis,blowjob,masturbate,masturbation,masturbating,rape,raped,raping,rapist,rapists,anal,fuck,fucking,in the ass,up the ass,up her ass,sexually,sexual,nsfw,orgasm,gay dating,gay mariage,gay marriage,gay wedding,cosplay,gender,lgbt,transgender";
+// Initialize global variables
 
-// many people die every day, enough to fill a million news websites
-
-window.badwords += "murdered,overdose,shooting,shootings,gunfight,shootout,stabbed to death,slain,killed,killing,stabbing,car crash,found dead,slain in,murder,man dies,woman dies,obituary,death penalty,suicide,mh17,cancer,drown,drowned,castration,sterilisation,testicular cancer,ebola,autism,aids,hiv,heroin,drugs,";
-
-// War propaganda, war zones, religion, race/nationalism and the war on Terra
-
-window.badwords += "paris,french,france,ukraine,ukrainian,ukrainians,ferguson,iran,yemen,lebanon,egypt,israel,israeli,israelis,gaza,jewish,jews,jew,palestina,palestine,palestinian,palestinians,iraq,iraqi,iraqis,two state solution,jerusalem,holocaust,anti semitism,antisemitism,anti semite,anti semitic,antisemitic,antisemites,antisemite,terrorist,terrorism,terror,bin laden,hezbollah,isis,isil,boko haram,sharia,al qaeda,alqaeda,jihadist,jihadists,jihadi,islamist,nemtsov,jesus,moslim,moslims,muslim,muslims,islam,islamic,ukip,war hero,war heroes,veteran,veterans,soldier,soldiers,bible,black people,black man,white people,white man,white power,christians,christian,christianity,";
-
-// additionally
-
-window.badwords += "gop,trump,netanyahu,blair,romney,hillary,mccain,jeb bush,donald trump,rand paul,palin,farage,obama,clinton,cameron,tea party,star wars,republican,republicans,hebdo,cartoonist,defence,military,tories,prisoner,prisoners,silk road,autopsy,lapd,nypd,cop,cops,police,mh370,air force,obamacare,isra,gold,silver,dollar,roi,plane crash,thanksgiving,black friday,news anchor,seo,interest rates,abduction"//,greece,greek";
-
-window.badwords = window.badwords.split(',');
-
-configuration = function(){
-/*
-
-CONFIGURATION:
-
-Display [feed origin] with the news items, default is no:
-
-yes
-
-Configure the [number of items to show], default is 1000 items:
-
-2000 items
-
-Configure the [number of items to keep] in storage, default is 1000 items:
-
-2020 items
-
-Configure the number of [items per rss feed] to use, default is 3 items:
-
-2 items
-
-Configure the [rss loading delay], the number of ms to wait between feed requests, default 20 ms:
-
-5 ms
-
-Configure the [html parsing delay], how many seconds to wait before refreshing the results, default 20 seconds:
-
-5 seconds
-
-Configure the [minimum number of words in a title], shorter titles will be discarded:
-
-3 words
-
-Set the number of seconds to [wait for opml] files to load, Default is 120 seconds:
-
-80 seconds
-
-Set the number of seconds to [wait for rss] files to load. Default is 30 seconds:
-
-24000 seconds
-
-Number of [seconds without response] before rss loader quits. Default is 20 seconds:
-
-80 seconds
-
-Do you want to [highlight frequent words] in the headlines? (Slow and experimental)
-
-no
-
-Insert your [opml] outlines herebelow 1 per line. Flat lists or comma separated lists are also accepted:
-
-http://opml.go-here.nl/opml.xml
-http://opml.go-here.nl/opml2.xml
-http://opml.go-here.nl/feeds-cleaning-1.txt
-http://opml.go-here.nl/megalythic-opml.opml
-http://opml.go-here.nl/bandit-export.opml
-http://opml.go-here.nl/the-european-union-en.opml
-http://opml.go-here.nl/other-feed-list-no-comment-no-forum-no-dutch.txt
-http://opml.go-here.nl/feedfury-science-feeds.txt
-http://opml.go-here.nl/feedfury-politics.opml
-http://opml.go-here.nl/feedfury-tech.txt
-http://opml.go-here.nl/raw-githubusercontent-com-apg-tech-blogs-you-should-read-master-quora.opml
-http://opml.go-here.nl/techfeeds.opml
-http://opml.go-here.nl/tim-stephenson-tech.opml
-http://opml.go-here.nl/higheredfeeds.opml
-http://opml.go-here.nl/100-tech-feed-subscriptions.xml
-http://opml.go-here.nl/popular-tech-blogs-dailytekk.opml
-http://opml.go-here.nl/top-100-technology-blogs-gigamegaweb.opml
-http://opml.go-here.nl/youtube-feed-list.txt
-http://opml.go-here.nl/theguardian.opml
-http://opml.go-here.nl/register-co-uk.txt
-http://opml.go-here.nl/googlefeeds.opml
-http://opml.go-here.nl/big-business.opml
-http://opml.go-here.nl/sept-2015.txt
-
-http://opml.go-here.nl/forbes-100-Best-Websites-For-Entrepreneurs.opml
-http://opml.go-here.nl/adage.opml
-http://opml.go-here.nl/feeds-2015-05-25.txt
-http://opml.go-here.nl/feeds-2015-03-14.txt
-http://opml.go-here.nl/feeds-2015-03-23.txt
-
-insert your [rss] feeds herebelow 1 per line. Warning, Updating the script deletes these:
-
-http://opml.go-here.nl/rss6.xml
-http://blog.go-here.nl/rss.xml
-http://feeds.feedburner.com/ericpetersautos/
-http://www.brotherjohnf.com/feed/
-http://www.brotherjohnf.com/comments/feed/
-http://www.darkgovernment.com/news/feed/
-http://feeds.feedblitz.com/alternet
-https://www.techinasia.com/feed/
-https://mises.org/feed/rss.xml
-
-The [rss blacklist] items, one per line
-
-http://example.com/feed/
-netrn.net
-http://paab.typepad.com/furtherandfaster/atom.xml
-http://www.thisiswhyimbroke.com/comments/feed
-http://www.pornhub.com/rss
-http://www.androidheadlines.com/feed
-http://www.techspot.com/community/forums/-/index.rss
-http://www.techsupportforum.com/forums/external.php?type=rss2
-http://nl.hardware.info/forum/forums/-/index.rss
-http://www.pickthebrain.com/blog/comments/feed/
-http://www.techpowerup.com/rss/index.php
-http://www.techpowerup.com/forums/forums/-/index.rss
-http://www.edp24.co.uk/cmlink/edp24_michael_bailey_f1_1_1208299
-http://www.edp24.co.uk/cmlink/edp24_chris_goreham_1_1208300
-http://www.techpowerup.com/rss/reviews.php
-http://www.timesofisrael.com/feed/
-http://rog.asus.com/forum/external.php?type=rss2
-http://feeds.nos.nl/nossportalgemeen
-http://archive.org/services/collection-rss.php
-http://gathering.tweakers.net/forum/rss?rssID=36c7973a22b9abeef10331e97cd6529e
-http://www.noordhollandsdagblad.nl/?service=rss
-http://www.nu.nl/feeds/rss/sport.rss
-https://boards.4chan.org/sci/index.rss
-http://forums.bigsoccer.com/forums/-/index.rss
-http://www.wikihow.com/feed.rss
-http://www.nsf.gov/rss/rss_www_funding_upcoming.xml
-http://www.nsf.gov/rss/rss_www_funding_pgm_annc_inf.xml
-http://www.nsf.gov/rss/rss_www_events.xml
-http://www.nu.nl/feeds/rss/beurs.rss
-http://nieuws.nl/feed/
-http://www.funonly.net/rss/rss_last_50_all_1.aspx
-http://ibnlive.in.com/ibnrss/top.xml
-http://www.noordhollandsdagblad.nl/stadstreek/?service=rss
-http://www.scpr.org/feeds/all_news
-http://www.beeradvocate.com/community/forums/-/index.rss
-http://scpr.org/feeds/all_news
-https://lunaticoutpost.com/syndication.php
-http://feeds.feedburner.com/ZiggoGebruikers
-http://p2pindependentforum.com/rss/public
-http://www.haarlemsdagblad.nl/thema/?service=rss
-http://www.sevenforums.com/external.php?type=rss2
-http://feeds.feedburner.com/ImgurGallery?format=xml
-funnyjunk.com
-http://www.torrentroom.com/rss?t=1
-www.torrentroom.com
-http://www.hln.be/wereld/rss.xml
-www.hln.be
-http://www.noordhollandsdagblad.nl/stadstreek/waterland/?service=rss
-www.noordhollandsdagblad.nl
-http://www.doorbraak.eu/?feed=rss2
-www.doorbraak.eu
-http://www.sign.nl/feed/
-www.sign.nl
-http://www.webhostingtalk.nl/external.php?type=RSS2
-www.webhostingtalk.nl
-http://www.frontpagemag.com/comments/feed/
-www.frontpagemag.com
-http://www.webhostingtalk.com/external.php?type=RSS2
-www.webhostingtalk.com
-http://feeds.feedburner.com/tweakers/nieuws
-feeds.feedburner.com
-http://feeds.inquisitr.com/theinquisitrentertainment
-feeds.inquisitr.com
-http://www.sevenforums.com/external.php?type=rss2&forumids=38
-www.sevenforums.com
-http://forums.hardwarezone.com.sg/external.php?type=rss2
-forums.hardwarezone.com.sg
-http://torrentz.eu/feed?q=left+behind+2014
-torrentz.eu
-http://www.youporn.com/rss/
-www.youporn.com
-https://eunmask.wordpress.com/feed/
-http://www.hln.be/belgie/rss.xml
-www.hln.be
-http://www.nltimes.nl/feed/
-www.nltimes.nl
-http://feeds.feedburner.com/ziggogebruikers
-http://kickass.to/?rss=1
-kickass.to
-http://www.proveiling.nl/rss/Rss.aspx
-http://www.droid-life.com/comments/feed/
-http://www.gatestoneinstitute.org/rss.xml
-www.gatestoneinstitute.org
-http://www.celebjihad.com/feed/
-tweakers.net
-http://archive.org/services/collection-rss.php?collection=bittorrenttexts&query=%28format%3A%22Archive%20BitTorrent%22%20AND%20mediatype%3Atexts%29%20AND%20-mediatype%3Acollection
-archive.org
-https://xenforo.com/community/forums/-/index.rss
-xenforo.com
-http://www.dreamindemon.com/community/forums/-/index.rss
-www.dreamindemon.com
-http://listverse.com/feed/
-listverse.com
-http://news.nationalpost.com/feed/
-news.nationalpost.com
-http://www.thejournal.ie/feed/
-www.thejournal.ie
-www.timesofisrael.com
-http://www.jta.org/feed
-www.jta.org
-http://www.infonu.nl/rss/rss.php
-www.infonu.nl
-http://www.thisiswhyimbroke.com/feed
-www.thisiswhyimbroke.com
-http://www.sevenforums.com/external.php?type=RSS2
-www.sevenforums.com
-############################newscorp############
-4kids.tv
-adelaidenow.com.au
-allthingsd.com
-alphamagazine.com.au
-avonromance.com
-biensimple.com
-bigcharts.com
-bigtennetwork.com
-blueskystudios.com
-canalfox.com
-careerone.com.au
-carsguide.com.au
-couriermail.com.au
-dailytelegraph.com.au
-dowjones.com
-espnstar.com
-fins.com
-fox.com
-foxbusiness.com
-foxconnect.com
-foxinternational.com
-foxinternationalchannels.com
-foxlife.com.br
-foxlife.tv
-foxmovies.com
-foxnews.com
-foxnewsinsider.com
-foxsearchlight.com
-foxsports.com
-foxsports.com.au
-foxsportsradio.com
-foxstudios.com
-fxnetworks.com
-golfchannel.com
-harpercollins.co.uk
-harpercollins.com
-harpercollinscatalogs.com
-harpercollinschildrens.com
-harperteen.com
-heraldsun.com
-hulu.com
-kdfi27.com
-marketwatch.com
-msg.com
-mundofox.com
-mxnet.com.au
-my20dc.com
-my20houston.com
-my24wutb.com
-my29tv.com
-my45.com
-my50chicago.com
-my65orlando.com
-my9tv.com
-myfox9.com
-myfoxatlanta.com
-myfoxaustin.com
-myfoxboston.com
-myfoxchicago.com
-myfoxdc.com
-myfoxdetroit.com
-myfoxdfw.com
-myfoxhouston.com
-myfoxla.com
-myfoxmemphis.com
-myfoxny.com
-myfoxorlando.com
-myfoxphilly.com
-myfoxphoenix.com
-myfoxtampabay.com
-myspace.com
-natgeotv.com
-nationalgeographic.com
-news.com.au
-newscorp.com
-newsinternational.co.uk
-newsoftheworld.co.uk
-newsspace.com.au
-nypost.com
-perthnow.com.au
-realestate.com
-sky.com
-sky.de
-sky.it
-skysports.com
-skytv.co.nz
-smartmoney.com
-smartsource.com
-speedtv.com
-staplescenter.com
-theaustralian.com.au
-thedaily.com
-thegarden.com
-thestreet.com
-thesun.co.uk
-thesundaytimes.co.uk
-thetimes.co.uk
-truelocal.com.au
-tvguide.com
-vedomosti.ru
-webmd.com
-weeklystandard.com
-weeklytimesnow.com.au
-wogx.com
-wsj.com
-wsjclassroomedition.com
-
-*/
-}
-
-// read the configuration into global variables
-
-varDetect          = function(a){ return (a.indexOf('\n') == -1 && a.indexOf('[') != -1 && a.indexOf(']') != -1) }
-instructions       = configuration.toString().split('\r\n').join('\n').split('\n\n');
-instructionsLength = instructions.length;
-for( x=0; x < instructionsLength ;x++ ){
-	if( varDetect(instructions[x]) ){
-		varName = instructions[x].split('[')[1].split(']')[0].replace(/ /g,"_");
-		x++;
-		dataSet = instructions[x].split('\n');
-		if( !varDetect(dataSet[0]) ){
-			if(dataSet.length == 1){ window[varName] = dataSet[0].split(' ')[0].trim();
-			}else{
-				window[varName] = new Array();
-				datLen = dataSet.length;
-				for( i=0; i < datLen ;i++ ){ window[varName].push(dataSet[i].trim()); }			
-}}}} delete configuration;
-
-///////// MANAGE STORED ARRAYS //////////////
-
-window['setValue'] = function(valName,dataToStore){	  GM_setValue(valName,dataToStore.join(',')); return true;  }
-window['getValue'] = function(valName,defaultValue){  return GM_getValue(valName,defaultValue).split(',');  }
-
-/////// INITIALIZE GLOBAL VARIABLES /////////
-
-window.unsubscribe                   = getValue('unsubscribe','');
 window.feedsRequested                = 0;
 window.feedResponses                 = 0;
 window.opmlRequested                 = 0;
 window.opmlResponses                 = 0;
+window.titlesFiltered                = 0;
+window.duplicateTitles               = 0;
+window.toShortTitles                 = 0;
+window.titleCount                    = 0;
 window.badwordCombinations           = [];
 window.badwordsByLength              = [];
 window.biggestBadword                = 0;
@@ -411,18 +83,24 @@ window.HTMLresultA                   = [[]];
 window.countInOpml                   = 0;
 window.oldTimeA                      = Math.floor( Date.now() / 1000 );
 window.xml_retreaved_from_opml       = 0;
-window.rss_blacklist                 = [].concat(window['rss_blacklist'], getValue('rss_blacklist','') );
-window.rss_suspended                 = getValue('rss_suspended','')
-window.rss_suspended_length          = window.rss_suspended.length
+window.rss_suspended_length          = 0 + !!window.rss_suspended.length;
 window.titleResult                   = [];
-window.rss_blacklist_length          = window.rss_blacklist.length;
+window.rss_blacklist_length          = 0 + !!window.rss_blacklist.length;
 window.lastDateError                 = "";
 window.oldestEntry                   = 0;
+window.renewTimer                    = 0;
+window.mouseMove                     = 0;
+window.waitForCompletion             = 100;
+//window.disposal                    = 0;
+window.feedsSkipped                  = 0;
+window.domainUnsubscribe             = [];
+window.domainRss_blacklist           = [];
 
 ////////////// FUNCTIONS ////////////////////
 
-// listen for salamisushi (need to figure out how to do this on time)
+// listen for the salamisushi feed detector (not working atm)
 
+/*
 window.addEventListener( "message", function (e) {
 	lastAttempt = GM_getValue('lastAttempt', false);
 	if(lastAttempt && lastAttempt != e.data.length){
@@ -433,17 +111,85 @@ window.addEventListener( "message", function (e) {
 		//log('stages','importing salamisushi aborted, length was identical to previous import');
 	}
 },false);
-
-document.getElementById('install').innerHTML="";
+*/
 
 // log things to their consoles
 
-window['log'] = function(logConsole, logMessage){ 	unsafeWindow.console_factory.write( ""+logConsole , ""+logMessage ); }
+window.disabledConsoles = ['storage','parse_html','var_monitor','feed_filter','pain','word_filter','duplicate_title','feed_origin','to_short', 'failure_request_error','failure_date_error','failure_future_date_error','faiure_parse_error','no_new_items','no_link','no_title','failure_no_items_in_feed'];
+
+window['log'] = function(logConsole, logMessage){
+	if(window.disabledConsoles.indexOf(logConsole) == -1){
+		unsafeWindow.console_factory.write( ""+logConsole , ""+logMessage )
+	}
+}
+
 gr  = function(val){ return '<span style="color:#00FF00">' + val + '</span>'; }
 br  = function(val){ return '<span style="color:#C6AE79">' + val + '</span>'; }
 red = function(val){ return '<span style="color:red">'     + val + '</span>'; }
 bl  = function(val){ return '<span style="color:#00F9E0">' + val + '</span>'; }
 ora = function(val){ return '<span style="color:#FFA100">' + val + '</span>'; }
+
+
+// get domain name from url
+
+window.getDomain = function(a){
+  
+  //strip protocol
+	if(a.indexOf('http://') == 0){ a = a.substring(7)	}
+	else if(a.indexOf('https://') == 0){ a = a.substring(8)	}
+	else if(a.indexOf('feed://') == 0){ a = a.substring(7)	}
+  
+  //discard folders
+	if(a.indexOf('/') != -1){ a = a.split('/')[0]; }
+  
+  // discard sub domains
+	var b = a.split('.');
+	var c = b.length;
+	if(c > 2){
+  
+  	// manage .co.dinosaur domains
+		a = ( b[c-2] == 'co' ? b[c-3] + '.co' : b[c-2]) + '.' + b[c-1]
+	}
+  
+  // dispose of fakes
+	if(a.length < 4) a = false;
+	return a;
+}
+
+// add domain to domainUnsubscribe (this is to perform a crude check to avoid checking the full list)
+
+window.addDomainUnsubscribe = function(a){
+	var domain = getDomain(a)
+	if(domain && window.domainUnsubscribe.indexOf(domain) == -1){
+		window.domainUnsubscribe.push(domain)
+	}	
+}
+
+// add domain to domainRss_blacklist (this is to perform a crude check to avoid checking the full list)
+window.addDomainRss_blacklist = function(a){
+var domain = getDomain(a)
+	if(domain && window.domainRss_blacklist.indexOf(domain) == -1){
+		window.domainRss_blacklist.push(domain)
+	}
+}
+
+// build unsubscribe domain list 
+
+window.unsubscribe.forEach(a=>window.addDomainUnsubscribe(a))
+
+window.rss_blacklist.forEach(a=>window.addDomainRss_blacklist(a))
+
+/*for(x=0,y=window.unsubscribe.length; x < y; x++){
+	window.addDomainUnsubscribe(window.unsubscribe[x])
+}
+
+// build blacklist domain list
+
+for(x=0,y=window.rss_blacklist.length; x < y; x++){
+	window.addDomainRss_blacklist(window.rss_blacklist[x])
+}
+
+*/
 
 // unsubscribe
 
@@ -454,10 +200,9 @@ window['unsubscribeFeed'] = function(badFeed){
 		if(window.unsubscribe.indexOf(badFeed) == -1){
 			window.unsubscribe.push(badFeed);
 			setValue('unsubscribe', window.unsubscribe );
+			window.addDomainUnsubscribe(badFeed);
 			window.renewResults();
-		}else{
-			alert('error \n\n'+badFeed + '\n\n was already unsubscribed');
-		}
+		}else{ alert('error \n\n'+badFeed + '\n\n was already unsubscribed') }
 	}
 	badFeed = badFeed.split('/')[2];
 	if (confirm("Get rid of all feeds on the domain?\n\n\n" + badFeed )){
@@ -466,25 +211,24 @@ window['unsubscribeFeed'] = function(badFeed){
 		if(window.unsubscribe.indexOf(badFeed) == -1){
 			window.unsubscribe.push(badFeed);
 			setValue('unsubscribe', window.unsubscribe );
+			window.addDomainUnsubscribe(badFeed);
 			window.renewResults();
-		}else{
-			alert('error \n\n'+badFeed + '\n\n was already unsubscribed');
-		}
+		}else{ alert('error \n\n'+badFeed + '\n\n was already unsubscribed') }
 	}
 }
 
 // periodically backup the blacklist
 
 window['serviceGMstorage'] = function(){
-	if( (window.rss_blacklist_length != window.rss_blacklist.length) 
-	&& (window.rss_blacklist_length = window.rss_blacklist.length) 
-	&& (setValue('rss_blacklist', window.rss_blacklist)) ){		
-		log('blacklist', red(          window.rss_blacklist_length) +' feeds in blacklist')
+	if( (window.rss_blacklist_length != window.rss_blacklist.length)
+	 && (setValue('rss_blacklist',      window.rss_blacklist)) 
+	 && (window.rss_blacklist_length =  window.rss_blacklist.length)  ){		
+		log('blacklist', red(           window.rss_blacklist_length) +' feeds in blacklist')
 	}
-	if( window.rss_suspended_length != window.rss_suspended.length ){
-		setValue('rss_suspended'      ,window.rss_suspended);
-		window.rss_suspended_length  = window.rss_suspended.length;
-		log('blacklist', ora(          window.rss_suspended_length) +' feeds suspended')
+	if( window.rss_suspended_length !=  window.rss_suspended.length ){
+		setValue('rss_suspended',       window.rss_suspended);
+		window.rss_suspended_length  =  window.rss_suspended.length;
+		log('blacklist', ora(           window.rss_suspended_length) +' feeds suspended')
 	}
 	
 	var setVariables = Object.keys( window );
@@ -501,7 +245,7 @@ window['serviceGMstorage'] = function(){
 		}else if(window[ setVariable[x] ] instanceof Array){
 			logText += ora( setVariable[x] + " : " ) + JSON.stringify(window[setVariable[x]]).length + " arr bytes<br>";
 		}else{
-			logText += ora( setVariable[x] + " : " ) + window[setVariable[x]].length + " bytes<br>";
+			logText += ora( setVariable[x] + " : " ) + JSON.stringify(window[setVariable[x]]).length + " bytes<br>";
 		}
 	}
 	log('var_monitor', logText)
@@ -553,12 +297,22 @@ window['renewResults'] = function(){
 	});
 	delete f;
 	
+	
+	// remove unsubscribed items
+	
+
+	HTMLresultX = HTMLresultX.filter(elem =>
+		window.domainUnsubscribe.indexOf(getDomain(elem[3])) == -1 
+		|| window.unsubscribe.every(a => elem[3].indexOf(a) == -1 ));
+	
+	/*
 	// remove blacklisted and unsubscribed items
 	HTMLresultX = HTMLresultX.filter( function(elem, pos){
 		return (window.rss_blacklist.indexOf(elem[3]) == -1) 
 		&& (window.unsubscribe.indexOf(elem[3]) == -1)
 		&& (window.unsubscribe.indexOf(elem[3].split('/')[2]) == -1)
 	});
+	*/
 	
 	// if there is nothing to do, do noting
 	
@@ -570,13 +324,13 @@ window['renewResults'] = function(){
 	
 	//log('parse_html', 'sorting news items by date and time');
 
-	HTMLresultX.sort( function(a,b){ 
-	return  (new Date(b[1]).getTime()) - (new Date(a[1]).getTime())
+	HTMLresultX.sort( (a,b) =>  Date.parse(b[1]) - Date.parse(a[1]) );
 	
+	//HTMLresultX.sort( function(a,b){ 
+	//	return  (new Date(b[1]).getTime()) - (new Date(a[1]).getTime())
+	//});
 	
-	
-	
-	/*
+		/*
 			var dateA = new Date( a[1] );
 			var timestampA = dateA.getTime();
 			var dateB = new Date( b[1] );
@@ -584,14 +338,17 @@ window['renewResults'] = function(){
 			return timestampB-timestampA;
 			
 			*/
-	});
 	
-	if(HTMLresultX.length > number_of_items_to_keep){
-		log('parse_html', 'trimming news item list from ' + gr(HTMLresultX.length) + ' to ' + number_of_items_to_keep);
-		HTMLresultX.splice(number_of_items_to_keep,999999999);			
-		var suppaTurbo = new Date( 	HTMLresultX[HTMLresultX.length-1][1] );
-		window.oldestEntry = suppaTurbo.getTime();
-		//HTMLresultX = HTMLresultX.slice(0,number_of_items_to_keep);
+	
+	if(HTMLresultX.length > window.pref.items_to_keep){
+		log('parse_html', 'trimming news item list from ' + red(HTMLresultX.length) + ' to ' + gr(window.pref.items_to_keep));
+		HTMLresultX.splice(window.pref.items_to_keep,999999999);			
+		//var suppaTurbo = new Date( 	HTMLresultX[HTMLresultX.length-1][1] );
+		//window.oldestEntry = suppaTurbo.getTime();
+		
+		window.oldestEntry = Date.parse( HTMLresultX[HTMLresultX.length-1][1] );
+		
+		//HTMLresultX = HTMLresultX.slice(0,window.pref.items_to_keep);
 	}
 
 	while(JSON.stringify(HTMLresultX).length  > 2636625){	
@@ -615,8 +372,99 @@ window['renewResults'] = function(){
 
 	var HTMLresultXlength = HTMLresultX.length;
 		
-	if(window.highlight_frequent_words != "no"){
-
+	if(window.pref.highlight_frequent_words != "off"){
+		// https://jsfiddle.net/5hk6329u/
+		
+		var words = window.titleResult.join(' ').toLowerCase().split(/\W+/g).sort();
+		var result = []
+var noHighlight = new Set("three four five seven eight nine eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty january february march april may june july august september october november december 2015 2016 720p 1080p x264 nbsp 8217 your with this comment program national upgrade against president scientist year from body that more will have says what back more about best holiday after years video over most news just series high last first world review down life secret city before announcement week congress deal know online test york almost people photos season america american americans bluray economy make next real report school some believe than time when would build coming facts free government hand girl here home kill leak plan shows ways north east south west white following control crazy dies does food game hits into miracle much only open other stories story take they things thread tips want anxiety attack call cars change changes death early every final found gets good hike holidays lady like looking love made making master message play power price start stay there these under between become today ahead calls case charges been house biggest hard getting though amid cover work happy hard lost should thanks becoming through young around though door great sign boyfriend girlfriend across wants their could crash earth force support being children dead edition list star state storms true beyond family fans federal lost million right sheltered student woman awesome been black business camera cold cookies daily date discussion ever fashionable fighters forces gift happy intelligent kids lead least lunch mobile nick radio record reserve system talks team tech times weather where brings response called worst freedom really century energy general since update where which anti behind better community enough international legal lives look looks marriage mini minute mother movie need official plans plus post return selling spill spirit think wrong awakens bill book brand building card check country days fast feel likely proof learn giving district close everything tree help cause travel full major space spain airport favorite flight live music tree captured close internet intervention model proof security stocks trade campaign court crisis district during issue mandatory matter mission show sold traffic units updates used watch annual armed catastrophe cause central collapse configuration emergency episode event everything feds fight finds friends giving group guide heart http jubilee latest lawsuit learn left likely long mall near party popular mine inspired justice keep".split(' '));
+		for (var x = 0; x < words.length; x++) {
+			var word = words[x];
+			if(word.length > 3 && word.length < 20 && !noHighlight.has(word)){
+				var count = 1;
+				while(words[x+10] === word){
+					count+=10;
+					x+=10;
+				}
+				while(words[x+1] === word){
+					count++;
+					x++;
+				}
+				result.push({word: word, count: count});
+				if(result.length > 200){
+					result.sort((a, b) => b.count - a.count);
+					result.length = 100;
+				}
+			}
+		}
+		result.sort((a, b) => b.count - a.count);
+		result.length = 100;
+		
+		//w = [];
+		//result.forEach(x=>w.push(x.word));
+		//w = new Set(w);
+		
+		w = result.map(z=> z.word);
+		log('frequent_words', '<br>'+w.join(' '));
+		w = new Set(w);
+		
+		//result.forEach(y=>{
+			for(x=0;x<HTMLresultXlength;x++){
+					
+				var a         = HTMLresultX[x][7];
+				var b         = a.split(/[^A-Za-z]/);
+				var len       = 0;
+				var spanstart = [];
+				var spanend   = [];
+				
+				b.forEach((z, y) => {
+					if(w.has(z)){
+						spanstart.push(len);
+						spanend.push(len + z.length);
+					}
+					len += z.length+1;
+				});
+				if(spanstart.length>0){
+					b=a.split('');
+					for(z=spanstart.length-1;z>=0;z--){
+					b.splice(spanend[z], 0, '</span>');
+					b.splice(spanstart[z], 0, '<span style="color:white">');
+				  }
+				HTMLresultX[x][7]=b.join('');
+				}
+			}
+		//}
+		
+		
+		/*
+		
+		//result.forEach(({word, count}) => document.body.innerHTML += `${count}: ${word}<br/>`);
+	
+		result.forEach(y=>for(x=0;x<HTMLresultXlength;x++){
+					HTMLresultX[x][7] = HTMLresultX[x][7].split(y).join('524354453434535346532632535'+y+'64536464643456446464645646455');
+		})
+		for(y in result){ 
+			if(count[y] < 5){ 
+			delete count[y] 
+			} else{
+				for(x=0;x<HTMLresultXlength;x++){
+					HTMLresultX[x][7] = HTMLresultX[x][7].split(y).join('524354453434535346532632535'+y+'64536464643456446464645646455');
+				}
+			}
+		}
+	
+	'<span style="color:white">').split('64536464643456446464645646455').join('</span>'
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 		var notgood = ["comment","program","national","upgrade","against","president","scientist"];
 		var wordArr = [];
 		var titleArr = [];
@@ -656,7 +504,8 @@ window['renewResults'] = function(){
 			HTMLresultX[x][7] = HTMLresultX[x][7].split('524354453434535346532632535').join('<span style="color:white">').split('64536464643456446464645646455').join('</span>');
 		}
 		
-		
+	
+	*/	
 	}
 	
 	// figure out which is the oldest entry for suppa turbo parsing
@@ -670,6 +519,8 @@ window['renewResults'] = function(){
 	
 	// combine array into string and write it to the page
 	
+	HTMLresultX.splice(window.pref.items_to_show,999999999);			
+	HTMLresultXlength = HTMLresultX.length;
 	
 	for(x=0;x<HTMLresultXlength;x++){		HTMLresultX[x] = HTMLresultX[x].join('');		}
 	HTMLresultX = HTMLresultX.filter(function(elem, pos){		return (HTMLresultX.indexOf(elem) == pos)		});
@@ -698,9 +549,14 @@ function htmlEncode( htmlToEncode ) {
 
 window['testAtr'] = function(xml , testThis , atr, defaultVal){
     //log('checking', "looking for " + gr(testThis) + " with default value " + defaultVal);
-	if( xml.contains( xml.getElementsByTagName(testThis)[0] ) && xml.contains( xml.getElementsByTagName(testThis)[0][atr] ) ){
-		//log('checking', gr("element " + testThis + " found"));
-		return htmlEncode( xml.getElementsByTagName(testThis)[0][atr] );
+	//if( xml.contains( xml.getElementsByTagName(testThis)[0] ) && xml.contains( xml.getElementsByTagName(testThis)[0][atr] ) ){
+		
+		//log('checking', gr("looking for attribute " + atr + " in element " + testThis ));
+	if( xml.contains( xml.getElementsByTagName(testThis)[0] ) && xml.getElementsByTagName(testThis)[0].hasAttribute(atr) ){
+		
+		//log('found_attr', gr("attribute " + atr + " in element " + testThis + " found"));
+		//log('attr','attribute found:' + atr)
+		return htmlEncode( xml.getElementsByTagName(testThis)[0].getAttribute(atr) );
 	}
 	//log('checking', red("element " + testThis + " not found"));
 	return defaultVal ;
@@ -708,9 +564,12 @@ window['testAtr'] = function(xml , testThis , atr, defaultVal){
 
 window['testElm'] = function(xml , testThis , defaultVal){
     //log('checking', "looking for " + gr(testThis) + " with default value " + defaultVal);
-	if( xml.contains( xml.getElementsByTagName(testThis)[0] ) && xml.contains( xml.getElementsByTagName(testThis)[0].childNodes[0] ) ){
-		//log('checking', gr("element " + testThis + " found"));
-		return htmlEncode( xml.getElementsByTagName(testThis)[0].childNodes[0].nodeValue );
+	if( xml.contains( xml.getElementsByTagName(testThis)[0] ) ){
+		if(xml.contains( xml.getElementsByTagName(testThis)[0].childNodes[0] ) ){
+			//log('checking', gr("element " + testThis + " found"));
+			return htmlEncode( xml.getElementsByTagName(testThis)[0].childNodes[0].nodeValue );	
+		} 
+		return htmlEncode( xml.getElementsByTagName(testThis)[0].innerHTML );	
 	}
 	//log('checking', red("element " + testThis + " not found"));
 	return defaultVal ;
@@ -720,34 +579,40 @@ window['testElm'] = function(xml , testThis , defaultVal){
 
 loadFeeds = function(nextTask){
 	window.applicationState = "working";
-	window.rss = window.rss.filter(function(elm){ 
-		return window.rss_blacklist.indexOf(elm) == -1 && window.rss_blacklist.indexOf(elm.trim()) == -1
-	});
-	window.rss = window.rss.filter(function(elm){ 
-		return window.rss_suspended.indexOf(elm) == -1 && window.rss_suspended.indexOf(elm.trim()) == -1
-	});
-	window.rss = window.rss.filter(function(elm){ 
-		return window.unsubscribe.indexOf(elm) == -1 && window.unsubscribe.indexOf(elm.split('/')[2]) == -1
-	});
+	
 	
 	window.lastParse = Date.now();
 	requestInterval = setInterval(function(){
-		if( (window.lastParse+window.seconds_without_response) > (Date.now()) && window.rss.length > 0){
+		if( (window.lastParse+window.pref.seconds_without_response) > (Date.now()) && window.rss.length > 0){
 		
-			var currentFeed   = window.rss.pop();
+			var currentFeed   = window.rss.pop().trim();
 			var currentOrigin = "not defined";
 			if( currentFeed  && currentFeed.indexOf('#') > -1){
 				currentFeed   = currentFeed.split('#');
-				currentOrigin = currentFeed[1];
-				currentFeed   = currentFeed[0];
+				currentOrigin = currentFeed[1].trim();
+				currentFeed   = currentFeed[0].trim();
 			}
+			var feedDomain = getDomain(currentFeed)
 			if(currentFeed
+			&& currentFeed.indexOf('Special:RecentChanges') == -1 // media wiki
+			&& ( window.domainRss_blacklist.indexOf(feedDomain) == -1 
+				|| window.rss_blacklist.every(a => currentFeed.indexOf(a) == -1 ))
+			&& ( window.domainUnsubscribe.indexOf(feedDomain) == -1 
+				|| window.unsubscribe.every(a => currentFeed.indexOf(a) == -1 ))
+			&&   window.rss_suspended.indexOf(currentFeed) == -1 ){
+			
+			
+			
+			/*
+			if(currentFeed
+			&& currentFeed.indexOf('Special:RecentChanges') == -1 //wikimedia wiki's
 			&& window.rss_blacklist.indexOf(currentFeed) == -1
-			&& window.rss_blacklist.indexOf(currentFeed.trim()) == -1
+			&& window.rss_blacklist.indexOf(currentFeed.split('/')[2]) == -1
 			&& window.rss_suspended.indexOf(currentFeed) == -1 
-			&& window.rss_suspended.indexOf(currentFeed.trim()) == -1
 			&& window.unsubscribe.indexOf(currentFeed) == -1
 			&& window.unsubscribe.indexOf(currentFeed.split('/')[2]) == -1){
+				*/
+				
 				window.feedsRequested++;			
 
 				log('rss_request_url', window.feedsRequested + ' ' + ora(currentFeed));
@@ -756,11 +621,12 @@ loadFeeds = function(nextTask){
 						method:  'GET',
 						url:     reqestUrl.split('feed:/').join('http:/').split('https:/').join('http:/'),
 						onload:  function(response){ parseFeed( response, reqestUrl, requestOrigin ) },
-						timeout: wait_for_rss*1000,
+						timeout: window.pref.wait_for_rss*1000,
 						onerror: function(){ 
-							window['rss_blacklist'].push( reqestUrl );
+							window.rss_blacklist.push( reqestUrl );
+							window.addDomainRss_blacklist(reqestUrl.trim());
 							if(window.rss_blacklist.indexOf( reqestUrl.trim() ) == -1){
-								window['rss_blacklist'].push( reqestUrl.trim() );
+								window.rss_blacklist.push( reqestUrl.trim() );
 							}
 							window.feedResponses++;
 							log('rss_request_url', window.feedsRequested + ' ' + red(reqestUrl));
@@ -769,12 +635,14 @@ loadFeeds = function(nextTask){
 						}
 					})
 				})(currentFeed,currentOrigin);
+			}else{
+				log('feed_filter', 'skipped ' + red(++window.feedsSkipped) + ' feeds')
 			}
 		}else{ 
 			clearInterval(requestInterval);
 			window.applicationState = nextTask;
 		}
-	},window.rss_loading_delay*1+10);
+	},window.pref.rss_loading_delay*1+10);
 }
 
 // parse the feeds
@@ -793,6 +661,7 @@ parseFeed = function( response, reqestedUrl, requestedOrigin ){
 			window['rss_blacklist'].push( reqestedUrl );
 			if(window.rss_blacklist.indexOf( reqestedUrl.trim() ) == -1){
 				window['rss_blacklist'].push( reqestedUrl.trim() );
+				window.addDomainRss_blacklist( reqestedUrl.trim() );
 			}			
 			log('failure_parse_error', window.feedResponses + ' ' + red( reqestedUrl ) );
 			return;
@@ -802,7 +671,7 @@ parseFeed = function( response, reqestedUrl, requestedOrigin ){
 		
 		var feedItems = xml.getElementsByTagName("item");
 
-		if(feedItems.length == 0){
+		if(feedItems.length == 0 || !feedItems ){
 			var feedItems = xml.getElementsByTagName("entry");
 		}
 		if(feedItems.length == 0){
@@ -813,7 +682,7 @@ parseFeed = function( response, reqestedUrl, requestedOrigin ){
 		}
 		var lastNoNew = "";
 		var logNoNew ="";
-		maxLength = Math.min( feedItems.length , items_per_rss_feed );
+		maxLength = Math.min( feedItems.length , window.pref.items_per_rss_feed );
 		for( var itemNr = 0; itemNr < maxLength; itemNr++ ){
 			var feedItemsNode = feedItems[itemNr];
 			
@@ -836,14 +705,14 @@ parseFeed = function( response, reqestedUrl, requestedOrigin ){
 			// link
 			var itemLink  = testElm(feedItemsNode , "link" , false);
 			if( ! itemLink ){ itemLink = testElm(feedItemsNode , "guid" , false) }
-			if( ! itemLink || itemLink.indexOf('http') == -1){ itemLink = testAtr(feedItemsNode , "link" , "href", false) }
+			if( ! itemLink || itemLink.indexOf('http') == -1){ itemLink = testAtr(feedItemsNode , "link" , "href", itemLink) }
 			
 			// date 2
 			if( ! itemPubDate ){ itemPubDate = testElm(feedItemsNode , "dc:date" , false) }
 			if( ! itemPubDate ){ itemPubDate = testElm(xml , "pubDate" , false) }
+			if( ! itemPubDate ){ itemPubDate = testElm(xml , "published" , false) }		
+			if( ! itemPubDate ){ itemPubDate = testElm(xml , "updated" , false) }
 			if( ! itemPubDate ){ itemPubDate = testElm(xml , "lastBuildDate" , false) }	
-			if( ! itemPubDate ){ itemPubDate = testElm(xml , "updated" , false) }	
-			if( ! itemPubDate ){ itemPubDate = testElm(xml , "published" , false) }	
 			
 			// try correct 2 digit years
 				
@@ -870,7 +739,7 @@ parseFeed = function( response, reqestedUrl, requestedOrigin ){
 					window.lastDateError = reqestedUrl;
 				}
 				itemPubDate = "Mon, 18 Mar 1974 00:00:00 +0000";
-			}else if( Date.now() < new Date( itemPubDate ).getTime() ){
+			}else if( Date.now() <  Date.parse( itemPubDate ) ){  //new Date( itemPubDate ).getTime()
 				log('failure_future_date_error', red( itemPubDate ) + ' = ' + red( new Date( itemPubDate ).toLocaleTimeString() ) + '<br>' + ora( reqestedUrl ));
 				if(feedItems.length > maxLength){ maxLength++ }
 				continue;
@@ -889,13 +758,20 @@ parseFeed = function( response, reqestedUrl, requestedOrigin ){
 			// do we have everything?
 			
 			if(itemTitle && itemLink && window.titleResult.indexOf(itemTitle) == -1 ){
-				window.titleResult.push( itemTitle );
+				
+				log("title_result", (++window.titleCount) + ' ' + ora(itemTitle));
 				
 				// filter out titles with badwords
 				
 				var stripTitle = itemTitle.slice(0).toLowerCase().replace(/[^a-z0-9]/g, " ");
 				var titleArray = stripTitle.split(' ');
-				if( titleArray.length >= minimum_number_of_words_in_a_title && titleArray.every(function(elm){ return (window['badwordLengthSet'].indexOf( elm.length ) != -1) && badwordsByLength[elm.length].indexOf( elm ) == -1 }) && badwordCombinations.every(function(elm){ return stripTitle.indexOf( elm ) == -1 })){
+				
+				if( titleArray.length >= window.pref.minimum_number_of_words_in_a_title 
+				&& titleArray.every(function(elm){
+					return (window['badwordLengthSet'].indexOf( elm.length ) == -1) 
+					|| badwordsByLength[elm.length].indexOf( elm ) == -1 
+				}) 
+				&& window.badwordCombinations.every(function(elm){ return stripTitle.indexOf( elm ) == -1 })){
 				
 					// define item class
 					
@@ -924,8 +800,14 @@ parseFeed = function( response, reqestedUrl, requestedOrigin ){
 						domainIndicator=domainIndicator.split('?')[0]
 					}
 					
-					if(!requestedOrigin||feed_origin == "no"){ requestedOrigin = "" }
+					if(!requestedOrigin||window.pref.feed_origin == "off"){ 
+					requestedOrigin = "";
+						log("headlines_found", window.feedResponses + ' ' + bl(itemTitle) );
+					}else{
+						log("feed_origin", window.feedResponses + ' ' + ora(requestedOrigin) + ' ' + bl(itemTitle) );
+					}
 					
+					window.titleResult.push( itemTitle );
 					
 					window['HTMLresultA'][0].push([
 					/*[0]*/ 	'<tr><td>',
@@ -942,15 +824,39 @@ parseFeed = function( response, reqestedUrl, requestedOrigin ){
 					
 					
 					//log('rss_items', itemTitle );
-				}else{ if(feedItems.length > maxLength){ maxLength++ } }
+					
+					// describe errors and filtered items
+				}else{
+					if( titleArray.length < window.pref.minimum_number_of_words_in_a_title){
+						log('to_short', (++window.toShortTitles) + ' ' + red(escape(itemTitle+'').split('%20').join(' ')));
+					}else{
+						log('word_filter',(++window.titlesFiltered) + ' ' + red(stripTitle));
+					}
+					if(feedItems.length > maxLength){ maxLength++ }
+				}
 				
-			}else{ if(feedItems.length > maxLength){ maxLength++ } }
+			}else{
+				if((!itemTitle || typeof itemTitle == "undefined" )&&(!itemLink)){
+					log('no_title_nor_link','<a href="'+response.finalUrl+'">'+red(response.finalUrl)+'</a>')
+				
+				}else if(!itemTitle || typeof itemTitle == "undefined" ){
+					log('no_title', itemLink +" "+ red(itemTitle));
+				}else if(!itemLink){
+					log('no_link',  '<a href="'+response.finalUrl+'">'+red(response.finalUrl)+'</a>' );
+				}else if(window.titleResult.indexOf(itemTitle) != -1){
+					log('duplicate_title', (++window.duplicateTitles) + ' ' + red(escape(itemTitle+'').split('%20').join(' ')));
+				}else{
+					log('mystery_error', "<br><br>" + feedItemsNode.innerHTML.split('<').join('<<b></b>') )
+				}
+				if(feedItems.length > maxLength){ maxLength++ } 
+			}
 		}
 		if(lastNoNew != ""){ log('no_new_items', logNoNew ) }
 	}catch(e){
 		window['rss_blacklist'].push( reqestedUrl );
 		if(window.rss_blacklist.indexOf( reqestedUrl.trim() ) == -1){
 			window['rss_blacklist'].push( reqestedUrl.trim() );
+			window.addDomainRss_blacklist(reqestedUrl.trim())
 		}
 		log('failure_try_parse_error', window.feedResponses + ' ' + red(reqestedUrl) + ' : ' + e);
 		return;
@@ -978,6 +884,8 @@ opmlReadingIntervalFunction = function(){
 					GM_xmlhttpRequest({
 						method: 'GET',
 						url:    reqestUrl.trim(),
+						timeout: window.pref.wait_for_opml*1000,
+						onerror: function(){ log('opml_request_error', red(reqestUrl))},
 						onload: function(response){
 						
 							//response.responseHeaders
@@ -1003,9 +911,9 @@ opmlReadingIntervalFunction = function(){
 									countInOpml += temp_listLength;
 									log('stages','receaved rss list ' + gr(window.opmlResponses) + ' with ' + gr(temp_listLength) + ' feeds for a total of ' + bl(countInOpml) + ' feeds');
 									//log('opml_monitor', ora(temp_listLength) + ' in ' + gr( response.finalUrl.split('<')[0] ))
-									return;
+									return 0;
 								//}
-								return;
+								return 0;
 							}
 							
 							var xml = new DOMParser();
@@ -1035,6 +943,7 @@ opmlReadingIntervalFunction = function(){
 								}
 							}
 						}
+						
 					})
 				})(currentOPML)
 			}
@@ -1050,21 +959,32 @@ opmlReadingIntervalFunction = function(){
 
 // sorting badwords array by length and into badword combinations
 
+window.badwords = ( window.pref.badwords1 +','+ window.pref.badwords2 +','+ window.pref.badwords3 +','+ window.pref.badwords4 +','+ window.pref.badwords5 +','+ window.pref.badwords6 +','+ window.pref.badwords7 +','+ window.pref.badwords8 ).split(',');
+
+for(x=0;x<window.badwords.length;x++){ window.badwords[x] = window.badwords[x].trim().toLowerCase().replace(/[^a-z0-9]/g, " ") }
+
+//log("bad",window.badwords.join(','));
+
 for(x=0;x<=100;x++){ window['badwordsByLength'][x] = []; }
 
 window['badwordLengthSet'] = [];
 
 for(x=0;x<window['badwords'].length;x++){
 	if(window['badwords'][x].indexOf(' ') != -1 ){
-		window['badwordCombinations'].push(window['badwords'][x]);
+		if(window['badwords'][x].length > 2){
+			window['badwordCombinations'].push(window['badwords'][x]);
+		}
 	}else{
 		var len = window['badwords'][x].length;
-		window['badwordsByLength'][ len ].push( window['badwords'][x] );
-		if( window['badwordLengthSet'].indexOf( len ) == -1 ){
-			window['badwordLengthSet'].push( len );
+		if(len > 2){
+			window['badwordsByLength'][ len ].push( window['badwords'][x] );
+			if( window['badwordLengthSet'].indexOf( len ) == -1 ){
+				window['badwordLengthSet'].push( len );
+			}
 		}
 	}
 }
+//log("badlen",badwordsByLength.join(',')+' ');
 
 for(x=100;x>=0;x--){ if( window['badwordsByLength'][x].length == 0){ window['badwordsByLength'].pop(); }else{ x=-1; } }
 
@@ -1086,13 +1006,18 @@ for(var x in y){
 	}
 }
 
+// delay if mouse is moving
+
+window.mouseUpdate = function(){ window.mouseMove = 5 }
+document.addEventListener('mousemove', mouseUpdate, false);
+
 /////////////// STAGES //////////////////////
 
 // 1 - display old news
 
 log('stages','display old news');
 window.renewResults();
-window['ParseTimer'] = setInterval(function(){ window.renewResults() }, window.html_parsing_delay * 1000  );
+//window['ParseTimer'] = setInterval(function(){ window.renewResults() }, window.pref.html_parsing_delay * 1000  );
 
 // keep blacklist up to date
 
@@ -1119,12 +1044,8 @@ for(x = window.rss.length; x>=0 ; x--){	window.rss[x] = window.rss[x] + "#script
 
 loadFeeds('load local storage feeds');
 
-window.progressInterval = setInterval( function(){
-	
-	// don't hurt the browser
-	pain = Math.floor(document.getElementsByTagName('meter')[0].value);
-	if (pain > 5000){log('pain',red(pain)); return }
-		
+window.progressInterval = function(){
+			
 	// fixing a mysterious bug that is rendering the rss array null rather than empty
 	// this did not happen before, all previous versions of the script stopped working
 	if(window.rss == null){ window.rss = []; }
@@ -1136,8 +1057,28 @@ window.progressInterval = setInterval( function(){
 	if(window.progressSeconds != window.oldProgressSeconds && window.rss){ 
 		log('feeds', ora(window.progressSeconds)+' seconds, '+gr(window.feedResponses)+' completed, '+bl(window.rss.length) + ' processing'); 
 	}
+	
+	// renew html results if mouse is not moving
+	if(window.mouseMove != 0){ window.mouseMove-- }
+	else{
+		window.oldRenewTimer = window.renewTimer;
+		window.renewTimer = Math.floor(window.progressSeconds/ window.pref.html_parsing_delay );
+		if(window.renewTimer != window.oldRenewTimer){ window.renewResults() }
+	}
 
-
+	/*
+	// filter undesirables from rss list every 20 cycles (not needed)
+	
+	if(window.disposal != 0){ window.disposal-- }
+	else{
+		window.disposal = 20;
+		window.rssLength = window.rss.length;
+		window.rss = window.rss.filter(function(elm){ 
+			return window.rss_blacklist.indexOf(elm) == -1 && window.rss_blacklist.indexOf(elm.trim()) == -1 && window.rss_suspended.indexOf(elm) == -1 && window.rss_suspended.indexOf(elm.trim()) == -1 && window.unsubscribe.indexOf(elm)   == -1 && window.unsubscribe.indexOf(elm.split('/')[2]) == -1
+		});
+		log('feed_filter', 'removed ' + red(window.rssLength-window.rss.length) + ' feeds out of ' + ora(window.rssLength) )
+	}
+	*/
 	
 	// 3 - load the feeds from localStorage
 
@@ -1169,152 +1110,136 @@ window.progressInterval = setInterval( function(){
 		//log('stages','loading opml files and feed lists');
 		loadFeeds('finish');
 
-	}else if( window.applicationState == "finish" && window.rss.length == 0  && window.opml.length == 0){ 
-		window.applicationState =  "finished";
+	}else if( window.applicationState == "finish" && window.rss.length == 0  && window.opml.length == 0 ){
 		
-		/*
-		if(publish_news = "yes"){
-			//var finalData = JSON.stringify(localStorage.getItem('finalarray', false))
+		if(window.waitForCompletion != 0){ window.waitForCompletion-- }
+		
+		else{
+		
+			window.applicationState =  "finished";
 			
-			
-			var finalData = document.getElementById('output').innerHTML;
-			
-			GM_xmlhttpRequest({
-				method:  'POST',
-				url:     "http://news.go-here.nl/update.php",
-				onload:  function(response){},
-				data:    "news="+encodeURIComponent(finalData),
-				headers: { "Content-Type": "application/x-www-form-urlencoded" }
-			})
-		}
-		*/
-		window.renewResults();
+			/*
+			if(publish_news = "yes"){
+				//var finalData = JSON.stringify(localStorage.getItem('finalarray', false))
+				
+				
+				var finalData = document.getElementById('output').innerHTML;
+				
+				GM_xmlhttpRequest({
+					method:  'POST',
+					url:     "http://news.go-here.nl/update.php",
+					onload:  function(response){},
+					data:    "news="+encodeURIComponent(finalData),
+					headers: { "Content-Type": "application/x-www-form-urlencoded" }
+				})
+			}
+			*/
+			window.renewResults();
 
-		clearInterval( window.progressInterval );
-		window['serviceGMstorage'] = function(){};
-		window.rss_blacklist = [];
-		window.unsubscribe = [];
-		//window.HTMLresultA = [];
-		window.rss_suspended = [];
-		window.titleResult = [];
-		log('stages','<b>finished</b>');
-		setTimeout(function(){
-			
-			//log('stages','<b>finished</b>');
-			clearInterval(window.ParseTimer);
-			clearInterval(window.serviceGMstorageTimer);
-			
-			// This is a temp fix. The goal here is to stop looking for pending messages when the aggregator is finished but the pending messages are invisible until they arrive. It will simply restart and continue to look for messages if anything arrives after assumed completion. The below just tells it to shut down again, and again, and again. 
-			
-			// one point of the logger is to continue working even if there is something seriously wrong, errors may happen at any time even after completion.
-			
-			// I will eventually implement a more aesthetically pleasing way to do this but it must not involve the bloat of keeping track of every pending task nor should it involve endlessly polling for new messages.
-			
-			unsafeWindow.console_factory.stop;
-			unsafeWindow.console_factory.stop;
-			unsafeWindow.console_factory.stop;
-			unsafeWindow.console_factory.stop;
-			unsafeWindow.console_factory.stop;
-			unsafeWindow.console_factory.stop;
-			unsafeWindow.console_factory.stop;
-			unsafeWindow.console_factory.stop;
-			unsafeWindow.console_factory.stop;
-			unsafeWindow.console_factory.stop;
-			unsafeWindow.console_factory.stop;
-			unsafeWindow.console_factory.stop;
-			unsafeWindow.console_factory.stop;
-			unsafeWindow.console_factory.stop;
-			unsafeWindow.console_factory.stop;
-			unsafeWindow.console_factory.stop;
-			unsafeWindow.console_factory.stop;
-			unsafeWindow.console_factory.stop;
-			unsafeWindow.console_factory.stop;
-			unsafeWindow.console_factory.stop;
-			unsafeWindow.console_factory.stop;
-			unsafeWindow.console_factory.stop;
-			unsafeWindow.console_factory.stop;
-			unsafeWindow.console_factory.stop;
-			unsafeWindow.console_factory.stop;
-			unsafeWindow.console_factory.stop;
-			unsafeWindow.console_factory.stop;
-			unsafeWindow.console_factory.stop;
-			unsafeWindow.console_factory.stop;
-			unsafeWindow.console_factory.stop;
-			unsafeWindow.console_factory.stop;
-			unsafeWindow.console_factory.stop;
-			unsafeWindow.console_factory.stop;
-			unsafeWindow.console_factory.stop;
-			unsafeWindow.console_factory.stop;
-			unsafeWindow.console_factory.stop;
-			unsafeWindow.console_factory.stop;
-			unsafeWindow.console_factory.stop;
-			unsafeWindow.console_factory.stop;
-			unsafeWindow.console_factory.stop;
-			unsafeWindow.console_factory.stop;
-			unsafeWindow.console_factory.stop;
-			unsafeWindow.console_factory.stop;
-			unsafeWindow.console_factory.stop;
-			for(o=0;o<100;o++){clearTimeout(o);clearInterval(o)};
-			
-		},10000);
+			clearInterval( window.progressInterval );
+			window['serviceGMstorage'] = function(){};
+			//window.rss_blacklist = [];
+			//window.unsubscribe = [];
+			//window.HTMLresultA = [];
+			//window.rss_suspended = [];
+			//window.titleResult = [];
+			log('stages','<b>finished</b>');
+			setTimeout(function(){
+				
+				//log('stages','<b>finished</b>');
+				clearInterval(window.ParseTimer);
+				clearInterval(window.serviceGMstorageTimer);
+				
+				// This is a temp fix. The goal here is to stop looking for pending messages when the aggregator is finished but the pending messages are invisible until they arrive. It will simply restart and continue to look for messages if anything arrives after assumed completion. The below just tells it to shut down again, and again, and again. 
+				
+				// one point of the logger is to continue working even if there is something seriously wrong, errors may happen at any time even after completion.
+				
+				// I will eventually implement a more aesthetically pleasing way to do this but it must not involve the bloat of keeping track of every pending task nor should it involve endlessly polling for new messages.
+				
+				unsafeWindow.console_factory.stop;
+				unsafeWindow.console_factory.stop;
+				unsafeWindow.console_factory.stop;
+				unsafeWindow.console_factory.stop;
+				unsafeWindow.console_factory.stop;
+				unsafeWindow.console_factory.stop;
+				unsafeWindow.console_factory.stop;
+				unsafeWindow.console_factory.stop;
+				unsafeWindow.console_factory.stop;
+				unsafeWindow.console_factory.stop;
+				unsafeWindow.console_factory.stop;
+				unsafeWindow.console_factory.stop;
+				unsafeWindow.console_factory.stop;
+				unsafeWindow.console_factory.stop;
+				unsafeWindow.console_factory.stop;
+				unsafeWindow.console_factory.stop;
+				unsafeWindow.console_factory.stop;
+				unsafeWindow.console_factory.stop;
+				unsafeWindow.console_factory.stop;
+				unsafeWindow.console_factory.stop;
+				unsafeWindow.console_factory.stop;
+				unsafeWindow.console_factory.stop;
+				unsafeWindow.console_factory.stop;
+				unsafeWindow.console_factory.stop;
+				unsafeWindow.console_factory.stop;
+				unsafeWindow.console_factory.stop;
+				unsafeWindow.console_factory.stop;
+				unsafeWindow.console_factory.stop;
+				unsafeWindow.console_factory.stop;
+				unsafeWindow.console_factory.stop;
+				unsafeWindow.console_factory.stop;
+				unsafeWindow.console_factory.stop;
+				unsafeWindow.console_factory.stop;
+				unsafeWindow.console_factory.stop;
+				unsafeWindow.console_factory.stop;
+				unsafeWindow.console_factory.stop;
+				unsafeWindow.console_factory.stop;
+				unsafeWindow.console_factory.stop;
+				unsafeWindow.console_factory.stop;
+				unsafeWindow.console_factory.stop;
+				unsafeWindow.console_factory.stop;
+				unsafeWindow.console_factory.stop;
+				unsafeWindow.console_factory.stop;
+				unsafeWindow.console_factory.stop;
+				for(o=0;o<100;o++){clearTimeout(o);clearInterval(o)};
+				
+			},10000);
+		}
 	}
-},50)
+}
+
+window.antiFreeze = function(){
+	
+		// don't hurt the browser
+	pain = Math.floor(document.getElementsByTagName('meter')[0].value);
+	delay = (pain < 2020)?(pain > 10000)?10000:20:pain-2000
+	//if(pain < 5050){ var delay = 50 }else{ var delay = pain-5000 }
+	//setTimeout(window.progressInterval, delay) 
+	setTimeout( window.antiFreeze, delay )
+	if (pain > 1000){
+		log('pain','pain: ' + red(pain-1000)+', processing: '+ ora(window.rss.length))
+	}
+	window.progressInterval();
+}
+
+setTimeout(window.antiFreeze,50)
 
 //////// MENU COMMAND FUNCTIONS /////////////
 
+// open configuration page
+
+function configurationPage(){
+	location.href=confLink;
+}
 // erase blacklist
 
 function eraseBlacklist(){ 
-	if(confirm("Feeds with errors are blacklisted but these errors might not be permanent. They can be inside a news item or the webmaster can finally fix the bugs after you harass him by email for many years.\n\n Do you want to reset the blacklist?")){ window['rss_blacklist']=[]; GM_deleteValue('rss_blacklist'); localStorage.removeItem('rss_blacklist'); }}
-
-// display the blacklist
-
-window['showRss_blacklist'] = function(){
-	tempItems = getValue('rss_blacklist','');
-	//if(!(tempItems instanceof Array)){ tempItems = tempItems.split(','); }
-	rssBlacklist = tempItems.filter( function(elem, pos){ return tempItems.indexOf(elem) == pos; })
-	document.getElementsByTagName('body')[0].innerHTML = '<div style="color:red;font-size:16px;"><ul><li>' + rssBlacklist.join('</li><li>') + '</li></ul></div>';
-}
+	if(confirm("Feeds with errors are blacklisted but these errors might not be permanent. They can be inside a news item or the webmaster can finally fix the bugs after you harass him by email for many years.\n\n Do you want to reset the blacklist?")){ window['rss_blacklist']=[]; GM_setValue('rss_blacklist',''); localStorage.removeItem('rss_blacklist'); }}
 
 // erase unsubscribed list
 
 function eraseUnsub(){
 	if(confirm("Restore subscription to all unsubscribed feeds?")){ 
-	window.unsubscribe=[]; GM_deleteValue('unsubscribe'); 
-}}
-
-// display the unsubscribed list
-
-window['showRss_unsub'] = function(){
-	document.getElementsByTagName('body')[0].innerHTML = '<div style="color:red;font-size:16px;"><ul><li>' + window.unsubscribe.join('</li><li>') + '</li></ul></div>';
-}
-
-// erase suspended list
-
-function eraseSuspended(){
-	if(confirm("Erase suspended list?")){ 
-	window.rss_suspended=[]; GM_deleteValue('rss_suspended'); 
-}}
-
-// display the suspended list
-
-window['showRss_suspended'] = function(){
-	document.getElementsByTagName('body')[0].innerHTML = '<div style="color:red;font-size:16px;"><ul><li>' + window.rss_suspended.join('</li><li>') + '</li></ul></div>';
-}
-
-
-// display auto detected feeds
-
-window['showRss_autodetect'] = function(){
-	document.getElementsByTagName('body')[0].innerHTML = '<div style="color:red;font-size:16px;"><ul><li>' + localStorage.autoDetect + '</li></ul></div>';
-}
-
-
-// erase auto detected
-
-function eraseAutoDetect(){
-	if(confirm("Erase auto detected list?")){ 
-	localStorage.autoDetect = []; 
+	window.unsubscribe=[];window.domainUnsubscribe=[]; GM_setValue('unsubscribe',''); 
 }}
 
 // erase old news
@@ -1329,26 +1254,44 @@ function eraseOldItems(){
 	}
 }
 
+// erase suspended list
+
+function eraseSuspended(){
+	if(confirm("Erase suspended list?")){ 
+	window.rss_suspended=[]; GM_deleteValue('rss_suspended'); 
+}}
+
+// erase auto detected
+
+function eraseAutoDetect(){ if(confirm("Erase auto detected list?")){ localStorage.autoDetect = []; }}
+
+// display auto detected feeds
+
+function showRss_autodetect(){
+	document.getElementsByTagName('body')[0].innerHTML = '<div style="color:red;font-size:16px;"><ul><li>' + localStorage.autoDetect + '</li></ul></div>';
+}
+
+
 //////// REGISTER MENU COMMANDS /////////////
 
+GM_registerMenuCommand("configuration", configurationPage);
 GM_registerMenuCommand("reset blacklist", eraseBlacklist);
-GM_registerMenuCommand("show blacklist", showRss_blacklist);
 GM_registerMenuCommand("reset unsubscribed", eraseUnsub);
-GM_registerMenuCommand("show unsubscribed", showRss_unsub);
 GM_registerMenuCommand("erase old news", eraseOldItems);
 GM_registerMenuCommand("reset suspended", eraseSuspended);
-GM_registerMenuCommand("show suspended", showRss_suspended);
-GM_registerMenuCommand("errase autodetect", eraseAutoDetect);
-GM_registerMenuCommand("show autodetect", showRss_autodetect);
+GM_registerMenuCommand("erase autodetect", eraseAutoDetect);
+GM_registerMenuCommand("display autodetect", showRss_autodetect);
+
+}
 
 //GM_registerMenuCommand("show autosubscribed feeds without blacklist and without unsubscribed feeds", eraseOldItems);
-
-
 
 // http://jsfiddle.net/sqz2kgrr/
 // remove list from list, 1 list, 2 list to remove, 3 result
 
-// todo: make config page/window and remove undesirable functions
 // Object.keys(obj).filter(removeBadProps).reduce(function (map, key) { map[key] = obj[key]; return map; }, {})
 
+// draw graph's
+
+// rewrite the whole thing using sets
 

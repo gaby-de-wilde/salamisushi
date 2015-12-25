@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="1.0">
+    <head>
+        <title>Tech</title>
+    </head>
+    <body>
+        <outline text="eXo Blog - The Cloud User Experience Platform"
+            title="eXo Blog - The Cloud User Experience Platform"
+            type="rss" xmlUrl="http://blog.exoplatform.org/feed/" htmlUrl="http://blog.exoplatform.com"/>
+        <outline text="FacileThings Blog" title="FacileThings Blog"
+            type="rss" xmlUrl="http://facilethings.com/feed.en.rss" htmlUrl="http://facilethings.com/blog/en"/>
+        <outline text="Google Alerts - raspberry pi"
+            title="Google Alerts - raspberry pi" type="rss"
+            xmlUrl="http://www.google.com/reader/public/atom/user/05790077257180173767/state/com.google/alerts/11755356051962732431" htmlUrl="http://www.google.com/reader/view/user%2F05790077257180173767%2Fstate%2Fcom.google%2Falerts%2F11755356051962732431"/>
+        <outline
+            text="Productivity Bits - Productivity &amp; GTD Hacks Blog"
+            title="Productivity Bits - Productivity &amp; GTD Hacks Blog"
+            type="rss"
+            xmlUrl="http://feeds.feedburner.com/ProductivityBits" htmlUrl="http://www.productivitybits.com"/>
+        <outline text="Terminal Geeks_" title="Terminal Geeks_"
+            type="rss"
+            xmlUrl="http://feeds.feedburner.com/terminalgeeks" htmlUrl="http://www.ignitionsix.com"/>
+        <outline title="Tech" text="Tech">
+            <outline text="Amazon Web Services Blog"
+                title="Amazon Web Services Blog" type="rss"
+                xmlUrl="http://feeds.feedburner.com/AmazonWebServicesBlog" htmlUrl="http://aws.typepad.com/aws/"/>
+            <outline text="isite_html5 - Online Community"
+                title="isite_html5 - Online Community" type="rss"
+                xmlUrl="http://rss.tmcnet.com/rss/grss.ashx?cnl=278" htmlUrl="http://www.html5report.com"/>
+            <outline text="There’s not a moment to lose!"
+                title="There’s not a moment to lose!" type="rss"
+                xmlUrl="http://mreinhold.org/blog/_feed.atom" htmlUrl="http://mreinhold.org/blog/"/>
+            <outline text="Ubuntu One Blog" title="Ubuntu One Blog"
+                type="rss"
+                xmlUrl="http://voices.canonical.com/ubuntuone/?feed=rss2" htmlUrl="http://voices.canonical.com/ubuntuone"/>
+        </outline>
+    </body>
+</opml>
