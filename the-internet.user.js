@@ -3,7 +3,7 @@
 // @namespace   AggregatorByGabyDeWilde
 // @include     http://opml.go-here.nl/internet.html
 // @include     http://opml.go-here.nl/configuration.html
-// @version     0.068
+// @version     0.072
 // @grant       GM_xmlhttpRequest
 // @grant       GM_getValue
 // @grant       GM_setValue
@@ -23,6 +23,7 @@ window.setValue         = function(a,b){return !GM_setValue(a,b.join(',')) } // 
 window.getValue         = function(a,b){return GM_getValue(a,b).split(',') } // manage gm storage get
 window.confLink         = "http://opml.go-here.nl/configuration.html";       // configuration url
 window.aggregatorLink   = "http://opml.go-here.nl/internet.html";            // aggregator url
+window.bugTracker       = "https://github.com/gaby-de-wilde/salamisushi/issues";
 id('install').innerHTML = '';                                                // remove installation instructions
 
 // load configuration
@@ -65,7 +66,7 @@ window.pref.feed_date = "on";
 window.pref.advanced_details = "off";
 window.pref.publish_news = "yes";
 window.pref.publish_news_url = "http://news.go-here.nl/update.php";
-window.pref.publish_news_password = "";
+window.pref.publish_news_password = "fawerhwfwaeafwefwnedshafshfadsklfjhdsklafhasflkdsjhfkldsjfwnealfkwjenfkwlejfnwekljwbeklfwbefakwlejbfweklfjbweklfwabeklfawjbeflkawebfakwlejbfawekljfwlkfwbefklwjebsfklwbkwlefbwklfjbwsfkljdbsfkwljebfkwlejbfwklefjbweklfjbwdsklfjbweleuwbfweibfweulfwgelfwhelfkwhefklwejhfkwlejfehfkwlejhfwklejfwheklfwheklfwjehfkwlejhfweklfwhefklwebflekbfwelkjbfwelkbjtwtweiruweggqwaerelfsdhlfkdhsfklasjhfklas";
 window.disabledConsoles = [];
 /* 'parse_html', 'suspended', 'rss_request_url', 'rss_response_url', 'no_new_items', 'failure_date_error', 'title_result',
 'word_filter', 'duplicate_title', 'considered', 'to_short', 'failure_future_date_error', 'no_link', 'no_title',
@@ -84,6 +85,7 @@ window.oldTimeA                = Math.floor( Date.now() / 1000 );
 window.rss_suspended_length    = window.rss_suspended.length;
 window.rss_blacklist_length    = window.rss_blacklist.length;
 window.maxPending              = window.pref.maxPending;
+
 /*/ log things to their consoles
 
 window.log = function(logConsole, logMessage){
@@ -118,17 +120,15 @@ window.unsubscribe_set           = new Set(window.unsubscribe);
 window.unsubscribe_fresh         = [];
 window.unsubscribe_fresh_set     = new Set([]);
 
+
+window.buildREgex_regex = new RegExp('[-\/\\^$*+[?].()|[\]{}]','g')
 window.buildRegex = function(x){
 	x.push('asdfasddasfasdfdasfdasf');
 	var y = [];
-	x.forEach(function(x){ y.push(x.trim().replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'));	});
+	x.forEach(function(x){ y.push(x.trim().replace(window.buildREgex_regex, '\\$&'));window.buildREgex_regex.lastIndex = 0;	});
 	x.pop();
 	return new RegExp( '^(' + y.join('|') + ')$','g' );
 }
-
-/////////////////////////////////////////////////
-// these should really be separate preferences //
-/////////////////////////////////////////////////
 
 // create unsubscribe regular expressions
 
@@ -194,7 +194,7 @@ for(x=0;x<badwords.length;x++){ badwords[x] = badwords[x].trim().toLowerCase().r
 badwords = badwords.filter(function(x){ return x.length > 2});
 
 badwords.push('asdfdasfasfasffas');
-window.badwords_regex = new RegExp( '(^|\\b)('+badwords.join('|')+')($|\\b)','g' );
+window.badwords_regex = new RegExp( '(^|\\b)('+badwords.join('|')+')($|\\b)' );
 
 delete window.badwords;
 
@@ -205,16 +205,23 @@ window.noHighlight = new Set("three four five seven eight nine eleven twelve thi
 
 ////////////// FUNCTIONS ////////////////////
 
+// default to http protocol
+
+window.cleanProtocol_regex = new RegExp('^(?:\/\/|https?:\/\/|feed:\/\/?)','i');//^(\/\/|http:\/\/|https:\/\/|feed:\/\/)
+window.cleanProtocol = function(url){
+	return url.replace(window.cleanProtocol_regex,'http://');
+}
+
 // get domain name from url
 
 window.getDomain = function(url){
-    var b,c;
-	url = url.replace(/^(http:\/\/|https:\/\/|feed:\/\/)/g,'');           // strip protocol
-	url = url.split('/')[0];                                              // discard folders
-	if((c = ( b = url.split('.') ).length) > 2){                          // discard sub domains
+  var b,c;
+	url = url.replace(window.cleanProtocol_regex,'');                   // strip protocol
+	url = url.split('/')[0];                                            // discard folders
+	if((c = ( b = url.split('.') ).length) > 2){                        // discard sub domains
 		url = ( b[c-2] == 'co' ? b[c-3] + '.co' : b[c-2]) + '.' + b[c-1]; // manage .co.dinosaur domains
 	}
-	if(url.length > 4){return url;}                                       // dispose of fakes
+	if(url.length > 4){return url;}                                     // dispose of fakes
 }
 
 
@@ -238,38 +245,37 @@ if(window.pref.feed_date == "off"){
 window.unsubscribeFeed = function(badFeed){
 	if (confirm("Remove (skip) this subscription?\n\n(cancel for domain options)\n\n\n" + badFeed )){
 		//window.unsubscribe = getValue('unsubscribe','');
+		window.unsubscribe_url_regex.lastIndex = 0;
+		window.unsubscribe_domain_regex.lastIndex = 0;
 		if(!unsubscribe_url_regex.test(badFeed) /* window.unsubscribe.indexOf(badFeed) == -1 */){
-			if(badFeed.startsWith('feed')){       badFeed = badFeed.substring(5)+'http' }
-			else if(badFeed.startsWith('https')){	badFeed = badFeed.substring(6)+'http' }
+			window.cleanProtocol( badFeed );
 			window.unsubscribe.push(badFeed);
 			window.unsubscribe_set.add(badFeed);
 			setValue('unsubscribe', window.unsubscribe );
 			let unsub_url = [];
 			window.unsubscribe.forEach(function(x){
-				x=x.trim();
-				if(x.startsWith('feed')){       x = x.substring(5)+'http' }
-				else if(x.startsWith('https')){	x = x.substring(6)+'http' }
-				if(x.startsWith('http')){
-					unsub_url.push(x);
-				}
+				x=window.cleanProtocol(x.trim());
+				if(x.startsWith('http')){ unsub_url.push(x) }
 			});
 			window.unsubscribe_url_regex = window.buildRegex(unsub_url);
+			if(!unsubscribe_url_regex.test(badFeed)){alert('unsubscribe is broken')}
 			//document.body.innerHTML = window.unsubscribe_url_regex.toString();
 			window.renewResults2(true);
-		}else{ alert('error \n\n'+badFeed + '\n\n was already unsubscribed'); }
+		}else if(window.unsubscribe.indexOf(badFeed) != -1){ alert('Error, regex failed to match feed: \n\n'+badFeed)}
+
+		else{ alert('error \n\n'+badFeed + '\n\n was already unsubscribed'); }
 	}else{
 		badFeed = getDomain(badFeed);
 		if (confirm("Remove (skip) all subscriptions for this domain?\n\n\n" + badFeed )){
 			//window.unsubscribe = getValue('unsubscribe','');
-			if(window.unsubscribe.indexOf(badFeed) == -1){
+			if(!unsubscribe_domain_regex.test(badFeed) /*window.unsubscribe.indexOf(badFeed) == -1*/){
 				window.unsubscribe.push(badFeed);
 				window.unsubscribe_set.add(badFeed);
 				setValue('unsubscribe', window.unsubscribe );
 				let unsub_domain = [];
 				window.unsubscribe.forEach(function(x){
-					if(!x.trim().startsWith('http') && !x.trim().startsWith('feed:/')){
-						unsub_domain.push(x);
-					}
+					x=window.cleanProtocol(x.trim());
+					if(!x.startsWith('http')){ unsub_domain.push(x) }
 				});
 				window.unsubscribe_domain_regex = window.buildRegex(unsub_domain);
 				window.renewResults2(true);
@@ -489,7 +495,7 @@ window.scrollArray = function( scroll_pos ){
 /*1*/					'<td rowspan="',
 /*2*/					1,
 /*3*/					'" style="background-color:#' + bgcolor + '">',
-/*4*/					(hoursAgo?hoursAgo + ' hours and ':'') + andMinutes + ' minutes ago',
+/*4*/					(hoursAgo?hoursAgo + ' hours and<br>':'') + andMinutes + ' minutes ago',
 /*5*/					'</td>',
 /*6*/			'<td><button data-feed="'+
 					subset[x][1]+
@@ -501,11 +507,15 @@ window.scrollArray = function( scroll_pos ){
 					itemClass +
 					' target="_blank">'+
 					subset[x][3]+
-					'</a></td><td>'+
-					domainIndicator+
-					'</td><td>'+
-					subset[x][4]+
-					'</td></tr>']);
+					'</a></td>',
+/*7*/			   	'<td rowspan="',
+/*8*/				 	1,
+/*9*/					'">',
+/*10*/				domainIndicator,
+/*11*/				'</td>',
+/*12*/	  '<td>'+
+				  subset[x][4]+
+				  '</td></tr>']);
 
   }
 	var outputResultHTML = '';
@@ -521,6 +531,18 @@ window.scrollArray = function( scroll_pos ){
 			outputResult[i+y][5]='';
 			y++;
 	    outputResult[i][2] = rowspan;
+		}
+		y=1;
+		rowspan = 1;
+		while(outputResult[i+y] && outputResult[i][8] != '' && outputResult[i][10] === outputResult[i+y][10]){
+			rowspan++;
+			outputResult[i+y][7]='<td style="display:none"></td>';
+			outputResult[i+y][8]='';
+			outputResult[i+y][9]='';
+			outputResult[i+y][10]='';
+			outputResult[i+y][11]='';
+			y++;
+	    outputResult[i][8] = rowspan;
 		}
 		outputResultHTML += outputResult[i].join('');
 	}
@@ -566,6 +588,8 @@ window.filterHtmlResult =  function(elem, pos){
 // filter out unsubscribed
 
 window.removeUnsubscribe = function(elem){
+	window.unsubscribe_url_regex.lastIndex = 0;
+	window.unsubscribe_domain_regex.lastIndex = 0;
 	return !window.unsubscribe_url_regex.test(elem[1]) && !window.unsubscribe_domain_regex.test(getDomain(elem[1]));
 }
 
@@ -861,7 +885,7 @@ window.loadFeedsInterval = function(){
 				window.pending_feeds.push(
 				[Date.now(),reqestUrl,GM_xmlhttpRequest({
 					method:     'GET',
-					url:        reqestUrl.split('feed:/').join('http:/').split('https:/').join('http:/'),
+					url:        window.cleanProtocol(reqestUrl),
 					onload:     function(response){
 									setTimeout(
 										(function(response, reqestUrl, requestOrigin){
@@ -940,7 +964,7 @@ window.loadFeeds = function(nextT){
 window.itemPubDate_regex = new RegExp("<item>[\\s\\S]+?<pubDate>([^<]+)","g");
 window.parseFeed = function( response, areqestedUrl, requestedOrigin ){
 
-reqestedUrl = areqestedUrl.replace(/\b(feed|https)/i,'http');
+reqestedUrl = window.cleanProtocol(areqestedUrl);
 	/*
 	if(areqestedUrl.trim().startsWith('feed')){
 		var reqestedUrl = 'http'+areqestedUrl.substring(4);
@@ -1061,8 +1085,8 @@ reqestedUrl = areqestedUrl.replace(/\b(feed|https)/i,'http');
 				itemLink  = window.testElmRegex(feedItemTextNode,["link","guid"]) || window.testAtrRegex(feedItemTextNode,"link","href") || window.testAtrRegex(feedItemTextNode,"enclosure","url");
 				if(!itemLink){log('no_link',  red(response.finalUrl));continue}
 			}
-			if(!itemLink || !itemLink.trim().startsWith('http')){continue}
-			itemLink = itemLink.trim();
+			if(!itemLink || !window.cleanProtocol(itemLink.trim()).startsWith('http')){continue}
+			itemLink = window.cleanProtocol(itemLink.trim());
 
 			// title
 
@@ -1527,6 +1551,7 @@ window.progressInterval = function(){
 		log('stages','<b>finished</b>');
 		setTimeout(function(){
 			clearTimeout(window.antiFreezeTimer);
+			//window.antiFreeze = function(){;};
 			clearInterval(window.ParseTimer);
 			clearInterval(window.serviceGMstorageTimer);
 			unsafeWindow.console_factory.stop;
@@ -1555,7 +1580,7 @@ window.antiFreeze = function(){
 	}*/
 	var pain = Math.floor(document.getElementsByTagName('meter')[0].value);
 	var delay = (pain < 2020)?10:(pain > 10000)?10000:pain-2000
-	setTimeout( window.antiFreeze, delay )
+	window.antiFreezeTimer = setTimeout( window.antiFreeze, delay )
 	//if (pain > 1000){log('pain','pain: ' + red(pain-1000)+', processing: '+ ora(window.rss.length))}
 
 	if(pain < 200){
@@ -1627,14 +1652,13 @@ g("erase old news",function(){
 g("reset suspended",function(){
 	if(c("Erase suspended list?")){
 		window.rss_suspended = [0,'http://example.com/feed/'];
-		window.rss_suspended_url = [];
-		window.rss_suspended.forEach(function(x){
-			if(!x.trim().startsWith('http')){
-				window.rss_suspended_url.push(x);
-			}
-		})
+		window.rss_suspended_url = ['http://example.com/feed/'];
+		/*window.rss_suspended.forEach(function(x){
+			x=window.cleanProtocol(x.trim());
+			if(!x.startsWith('http')){ window.rss_suspended_url.push(x) }
+		})*/
 		window.suspended_regex = window.buildRegex(window.rss_suspended_url);
-		setValue('rss_suspended', '');
+		setValue('rss_suspended', [0,'http://example.com/feed/']);
 		window.serviceGMstorage()}});
 g("erase autodetect",function(){
 	if(c("Erase auto detected list?")){
@@ -1642,18 +1666,12 @@ g("erase autodetect",function(){
 g("display autodetect",function(){
 	document.getElementsByTagName('body')[0].innerHTML =
 		'<div style="color:red;font-size:16px;"><ul><li>' + localStorage.autoDetect + '</li></ul></div>'})
-
-
 }else{
 
 	// load old configuration into the form
 
 	id('configuration').value = window.configuration;
-	window.urlArrays.forEach(function(x){
-		if(window[x][0]){
-			id(x).value = window[x].join('\n')
-		}
-	});
+	window.urlArrays.forEach(function(x){	if(window[x][0]){ id(x).value = window[x].join('\n') } });
 
 	// update configuration if form is submitted
 
@@ -1662,10 +1680,8 @@ g("display autodetect",function(){
 			id('submitCheck').value = "unchecked";
 			GM_setValue( 'configuration', id('configuration').value );
 			window.urlArrays.forEach(function(x){setValue(x, id(x).value.split('\n'))})
-			if(confirm("\n\n      Settings saved!   \n\nProceed to aggregator?\n\n")){
-				location.href = window.aggregatorLink;
-			}
+			if(confirm("\n\n      Settings saved!   \n\nProceed to aggregator?\n\n")){ location.href = window.aggregatorLink }
 		}
 	},50)
-
+	GM_registerMenuCommand("feature requests / bug report", function(){ location.href = window.pref.bugTracker });
 }
