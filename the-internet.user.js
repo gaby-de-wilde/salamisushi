@@ -3,7 +3,7 @@
 // @namespace   AggregatorByGabyDeWilde
 // @include     http://opml.go-here.nl/internet.html
 // @include     http://opml.go-here.nl/configuration.html
-// @version     0.072
+// @version     0.075
 // @grant       GM_xmlhttpRequest
 // @grant       GM_getValue
 // @grant       GM_setValue
@@ -11,6 +11,7 @@
 // @grant       GM_deleteValue
 // @grant       GM_registerMenuCommand
 // @updateURL   http://opml.go-here.nl/the-internet.meta.js
+// @connect     *
 // ==/UserScript==
 
 /* https://github.com/gaby-de-wilde/salamisushi */
@@ -61,12 +62,12 @@ if(y){
 // configuration not included in configuration page
 
 window.pref.blacklist_feed_with_script = false;
-window.pref.maxPending = 100;
+window.pref.maxPending = 5;
 window.pref.feed_date = "on";
 window.pref.advanced_details = "off";
-window.pref.publish_news = "yes";
-window.pref.publish_news_url = "http://news.go-here.nl/update.php";
-window.pref.publish_news_password = "fawerhwfwaeafwefwnedshafshfadsklfjhdsklafhasflkdsjhfkldsjfwnealfkwjenfkwlejfnwekljwbeklfwbefakwlejbfweklfjbweklfwabeklfawjbeflkawebfakwlejbfawekljfwlkfwbefklwjebsfklwbkwlefbwklfjbwsfkljdbsfkwljebfkwlejbfwklefjbweklfjbwdsklfjbweleuwbfweibfweulfwgelfwhelfkwhefklwejhfkwlejfehfkwlejhfwklejfwheklfwheklfwjehfkwlejhfweklfwhefklwebflekbfwelkjbfwelkbjtwtweiruweggqwaerelfsdhlfkdhsfklasjhfklas";
+window.pref.publish_news = "no";
+window.pref.publish_news_url = "";
+window.pref.publish_news_password = "";
 window.disabledConsoles = [];
 /* 'parse_html', 'suspended', 'rss_request_url', 'rss_response_url', 'no_new_items', 'failure_date_error', 'title_result',
 'word_filter', 'duplicate_title', 'considered', 'to_short', 'failure_future_date_error', 'no_link', 'no_title',
@@ -115,13 +116,12 @@ window.ora = function(val){ return '<span style="color:#FFA100">' + val + '</spa
 // badwords     : regex
 
 window.titleResult_set           = new Set([]);
-
 window.unsubscribe_set           = new Set(window.unsubscribe);
 window.unsubscribe_fresh         = [];
 window.unsubscribe_fresh_set     = new Set([]);
 
 
-window.buildREgex_regex = new RegExp('[-\/\\^$*+[?].()|[\]{}]','g')
+window.buildREgex_regex = new RegExp(/[-\/\\^$*+[?].()|[\]{}]/g);
 window.buildRegex = function(x){
 	x.push('asdfasddasfasdfdasfdasf');
 	var y = [];
@@ -491,7 +491,7 @@ window.scrollArray = function( scroll_pos ){
 		var bgcolor = (subset[x][0]+0).toString(5).slice(8,14)
 
 		outputResult.push([
-/*0*/			'<tr>',
+/*0*/			'<tbody><tr>',
 /*1*/					'<td rowspan="',
 /*2*/					1,
 /*3*/					'" style="background-color:#' + bgcolor + '">',
@@ -514,8 +514,8 @@ window.scrollArray = function( scroll_pos ){
 /*10*/				domainIndicator,
 /*11*/				'</td>',
 /*12*/	  '<td>'+
-				  subset[x][4]+
-				  '</td></tr>']);
+				  subset[x][4],
+/*13*/		'</td></tr></tbody>']);
 
   }
 	var outputResultHTML = '';
@@ -524,14 +524,17 @@ window.scrollArray = function( scroll_pos ){
 		var rowspan = 1;
 		while(outputResult[i+y] && outputResult[i][2] != '' && outputResult[i][4] === outputResult[i+y][4]){
 			rowspan++;
+			outputResult[i+y][0]='<tr>';
 			outputResult[i+y][1]='<td style="display:none"></td>';
 			outputResult[i+y][2]='';
 			outputResult[i+y][3]='';
 			outputResult[i+y][4]='';
 			outputResult[i+y][5]='';
+			outputResult[i+y-1][13]='</td></tr>';
 			y++;
 	    outputResult[i][2] = rowspan;
 		}
+		/*
 		y=1;
 		rowspan = 1;
 		while(outputResult[i+y] && outputResult[i][8] != '' && outputResult[i][10] === outputResult[i+y][10]){
@@ -544,6 +547,7 @@ window.scrollArray = function( scroll_pos ){
 			y++;
 	    outputResult[i][8] = rowspan;
 		}
+		*/
 		outputResultHTML += outputResult[i].join('');
 	}
 
@@ -861,90 +865,78 @@ window.loadFeedsInterval = function(){
 			currentOrigin = currentFeed[1].trim();
 			currentFeed   = currentFeed[0].trim();
 		}
-		var feedDomain    = getDomain(currentFeed);
-		/*if(currentFeed && currentFeed.indexOf('Special:RecentChanges') == -1 && !window.rss_blacklist_regex.test(currentFeed) &&
-		!window.rss_blacklist_regex.test(feedDomain) &&
-		!window.unsubscribe_regex.test(currentFeed) &&
-		!window.unsubscribe_regex.test(feedDomain) &&
-		window.unsubscribe.every(function(a){return currentFeed.indexOf(a) == -1 }) && window.rss_suspended.indexOf(currentFeed) == -1 ){*/
-	window.rss_blacklist_url_regex.lastIndex = 0;
-	window.rss_blacklist_domain_regex.lastIndex = 0;
-	window.unsubscribe_url_regex.lastIndex = 0;
-	window.unsubscribe_domain_regex.lastIndex = 0;
-	window.suspended_regex.lastIndex = 0;
-
+		window.rss_blacklist_url_regex.lastIndex = 0;
+		window.unsubscribe_url_regex.lastIndex = 0;
+		window.suspended_regex.lastIndex = 0;
 		if(currentFeed &&
-		!window.rss_blacklist_url_regex.test(currentFeed) &&
-		!window.rss_blacklist_domain_regex.test(feedDomain) &&
-		!window.unsubscribe_url_regex.test(currentFeed) &&
-		!window.unsubscribe_domain_regex.test(feedDomain) &&
-		!window.suspended_regex.test(currentFeed)){
-			window.feedsRequested++;
-			log('rss_request_url', window.feedsRequested + ' ' + ora(currentFeed));
-			(function (reqestUrl,requestOrigin) {
-				window.pending_feeds.push(
-				[Date.now(),reqestUrl,GM_xmlhttpRequest({
-					method:     'GET',
-					url:        window.cleanProtocol(reqestUrl),
-					onload:     function(response){
-									setTimeout(
-										(function(response, reqestUrl, requestOrigin){
-											window.parseFeed( response, reqestUrl, requestOrigin )
-										}).bind(undefined, response, reqestUrl, requestOrigin)
-									,0)
-								},
-					/*function(response){ window.parseFeed( response, reqestUrl, requestOrigin ) },*/
-					timeout:    window.pref.wait_for_rss*1000,
-					onerror:    function(){
-									window.rss_blacklist.push( reqestUrl );
-									window.removePending(reqestUrl)
-									window.feedResponses++;
-									log('rss_request_url', window.feedsRequested + ' ' + red(reqestUrl));
-									log('failure_request_error', red( reqestUrl ) );
-									return;
-								},
-					ontimeout:  function(){
-									window.rss_blacklist.push( reqestUrl );
-									window.removePending(reqestUrl)
-									window.feedResponses++;
-									log('timeout',red( reqestUrl ))
-								},
-					onabort:   function(){
-									window.rss_blacklist.push( reqestUrl );
-									window.removePending(reqestUrl)
-									window.feedResponses++;
-									log('aborted',red( reqestUrl ))
-								}
-				})]);
-			})(currentFeed,currentOrigin);
-		}else{
-			/*
-			if( window.rss_blacklist_url_regex.test(currentFeed)){
-				log('wtf','blacklist_url');
-			}else if( window.rss_blacklist_domain_regex.test(feedDomain) ){
-				log('wtf','blacklist_domain');
-			}else if( window.unsubscribe_url_regex.test(currentFeed) ){
-				log('wtf','unsubscribe_url');
-			}else if( window.unsubscribe_domain_regex.test(feedDomain) ){
-				log('wtf','unsubscribe_domain');
-			}else if( window.suspended_regex.test(currentFeed) ){
-				log('wtf','suspended');
-			}else{
-				log('wtf','WTF????');
-			}*/
+			!window.rss_blacklist_url_regex.test(currentFeed) &&
+			!window.unsubscribe_url_regex.test(currentFeed) &&
+			!window.suspended_regex.test(currentFeed)){
 
-			window.feedsSkipped++
-			//log('feed_filter', 'skipped ' + red(window.feedsSkipped) + ' feeds');
+			var feedDomain = getDomain(currentFeed);
+
+			window.rss_blacklist_domain_regex.lastIndex = 0;
+			window.unsubscribe_domain_regex.lastIndex = 0;
+			if(feedDomain &&
+				!window.rss_blacklist_domain_regex.test(feedDomain) &&
+				!window.unsubscribe_domain_regex.test(feedDomain)){
+
+				window.feedsRequested++;
+				log('rss_request_url', window.feedsRequested + ' ' + ora(currentFeed));
+				(function (reqestUrl,requestOrigin) {
+					window.pending_feeds.push(
+					[Date.now(),reqestUrl,GM_xmlhttpRequest({
+						method:     'GET',
+						url:        window.cleanProtocol(reqestUrl),
+						onload:     function(response){
+										setTimeout(
+											(function(response, reqestUrl, requestOrigin){
+												window.parseFeed( response, reqestUrl, requestOrigin )
+											}).bind(undefined, response, reqestUrl, requestOrigin)
+										,0)
+									},
+						/*function(response){ window.parseFeed( response, reqestUrl, requestOrigin ) },*/
+						timeout:    window.pref.wait_for_rss*1000,
+						onerror:    function(){
+										window.rss_blacklist.push( reqestUrl );
+										window.removePending(reqestUrl)
+										window.feedResponses++;
+										log('rss_request_url', window.feedsRequested + ' ' + red(reqestUrl));
+										log('failure_request_error', red( reqestUrl ) );
+										return;
+									},
+						ontimeout:  function(){
+										window.rss_blacklist.push( reqestUrl );
+										window.removePending(reqestUrl)
+										window.feedResponses++;
+										log('timeout',red( reqestUrl ))
+									},
+						onabort:   function(){
+										window.rss_blacklist.push( reqestUrl );
+										window.removePending(reqestUrl)
+										window.feedResponses++;
+										log('aborted',red( reqestUrl ))
+									}
+					})]);
+				})(currentFeed,currentOrigin);
+			}else{
+				window.feedsSkipped++;
+				loadFeedsInterval();
+			}
+		}else{
+			window.feedsSkipped++;
 			loadFeedsInterval();
 		}
 	}
 	if(window.pending_feeds.length < window.maxPending && window.rss.length > 0){
-		loadFeedsInterval();
+		//loadFeedsInterval();
+		setTimeout(window.loadFeedsInterval, window.pref.rss_loading_delay*1)
 	}
 }
 
 // feed loading interval trigger
 
+/*
 window.requestInterval = false;
 window.requestInterval2 = false;
 
@@ -958,13 +950,14 @@ window.loadFeeds = function(nextT){
 	window.requestInterval = setInterval(window.loadFeedsInterval, window.pref.rss_loading_delay*1);
 	window.requestInterval2 = setInterval(window.loadFeedsInterval, window.pref.rss_loading_delay*1)
 }
+*/
 
 // parse the feeds
 
 window.itemPubDate_regex = new RegExp("<item>[\\s\\S]+?<pubDate>([^<]+)","g");
 window.parseFeed = function( response, areqestedUrl, requestedOrigin ){
 
-reqestedUrl = window.cleanProtocol(areqestedUrl);
+	reqestedUrl = window.cleanProtocol(areqestedUrl);
 	/*
 	if(areqestedUrl.trim().startsWith('feed')){
 		var reqestedUrl = 'http'+areqestedUrl.substring(4);
@@ -991,7 +984,7 @@ reqestedUrl = window.cleanProtocol(areqestedUrl);
 	}
 
 
-	// date 1  - quickly check the first 4 dates before parsing the xml
+	// date 1  - quickly check the first 6 dates before parsing the xml
 
 	var i=0;
 	var pub;
@@ -1010,11 +1003,11 @@ reqestedUrl = window.cleanProtocol(areqestedUrl);
 				pubD = Date.parse(pub[1]);
 				if(isNaN(pubD)){ continue }               // skip broken dates
 				if(pubD > window.oldestEntry){ break }    // new item found!
-				if(i>=4){                                 // no new news found
+				if(i>=6){                                 // no new news found
 					log('no_new_items', (++window.noNewItems) + ' ' +ora(reqestedUrl));
 					return;
 				}
-			}while(i++)
+			}while(++i)
 		}
 	}
 
