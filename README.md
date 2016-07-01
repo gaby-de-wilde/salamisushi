@@ -46,41 +46,41 @@ You can message me on freenode, I'm user gde33
 
 You can find me on these channels:
 
-##programming
-##javascript
-##js
-#techrights
-##chat
-##economics
-##philosophy
-##biohack
-##electronics
-##hardware
-##hardware-social
-#web
-##design
-#ubuntu
-#html
-#css
-#html5
-#ai
-##philosophy-off
-##conspiracy
-##math
-#regex
-##crypto
-#deluge
-#KVIrc
-##information
-#Reddit
-#greasemonkey
-##science
-#yacy
-##chess
-#vivaldi
-##Linux-offtopic
+ ##programming
+ ##javascript
+ ##js
+ #techrights
+ ##chat
+ ##economics
+ ##philosophy
+ ##biohack
+ ##electronics
+ ##hardware
+ ##hardware-social
+ #web
+ ##design
+ #ubuntu
+ #html
+ #css
+ #html5
+ #ai
+ ##philosophy-off
+ ##conspiracy
+ ##math
+ #regex
+ ##crypto
+ #deluge
+ #KVIrc
+ ##information
+ #Reddit
+ #greasemonkey
+ ##science
+ #yacy
+ ##chess
+ #vivaldi
+ ##Linux-offtopic
 
 or simply click here :)
 
-ircs://chat.freenode.net:6697/##programming,##javascript,##js,#techrights,##chat,##economics,##philosophy,##biohack,##electronics,##hardware,##hardware-social,#web,##design,#ubuntu,#html,#css,#html5,#ai,##philosophy-off,##math,#regex,##crypto,#deluge,#KVIrc,##information,#Reddit,#greasemonkey,##science,#yacy,##chess,#vivaldi,##Linux-offtopic
+ ircs://chat.freenode.net:6697/##programming,##javascript,##js,#techrights,##chat,##economics,##philosophy,##biohack,##electronics,##hardware,##hardware-social,#web,##design,#ubuntu,#html,#css,#html5,#ai,##philosophy-off,##math,#regex,##crypto,#deluge,#KVIrc,##information,#Reddit,#greasemonkey,##science,#yacy,##chess,#vivaldi,##Linux-offtopic
 
