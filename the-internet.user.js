@@ -3,7 +3,7 @@
 // @namespace   AggregatorByGabyDeWilde
 // @include     http://opml.go-here.nl/internet.html
 // @include     http://opml.go-here.nl/configuration.html
-// @version     0.075
+// @version     0.081
 // @grant       GM_xmlhttpRequest
 // @grant       GM_getValue
 // @grant       GM_setValue
@@ -62,10 +62,10 @@ if(y){
 // configuration not included in configuration page
 
 window.pref.blacklist_feed_with_script = false;
-window.pref.maxPending = 5;
+window.pref.maxPending = 30;
 window.pref.feed_date = "on";
 window.pref.advanced_details = "off";
-window.pref.publish_news = "no";
+window.pref.publish_news = "yes";
 window.pref.publish_news_url = "";
 window.pref.publish_news_password = "";
 window.disabledConsoles = [];
@@ -74,10 +74,11 @@ window.disabledConsoles = [];
 'title_similarity', 'blacklist', 'abort', 'aborted', 'timeout', 'failure_request_error','failure_parse_error',
 'failure_no_items_in_feed','opml_request_url', 'opml_response_url', 'feed_filter', 'pain', 'feed_origin',
 'var_monitor', 'stages', 'feeds', 'performance', 'average_time', 'storage', 'faiure_parse_error'//*/
+window.linkTarget = "_blank";
 
 // Initialize global variables
 
-'feedsRequested feedResponses feedsSkipped noNewItems consideredFeeds opmlRequested opmlResponses titlesFiltered duplicateTitles toShortTitles titleCount countInOpml xml_retreaved_from_opml oldestEntry renewTimer mouseMove lastDateError'.split(' ').forEach(function(x){window[x]=0});
+'feedsRequested feedResponses feedsSkipped opmlRequested opmlResponses titlesFiltered duplicateTitles toShortTitles titleCount countInOpml xml_retreaved_from_opml oldestEntry renewTimer mouseMove'.split(' ').forEach(function(x){window[x]=0});
 
 window.titleResult             =[];
 window.HTMLresultA             = [[]];
@@ -100,11 +101,38 @@ window.log = function(){}
 window.monitorMode = false;
 document.getElementById('consolecontainer').style.visibility = "hidden";
 
-window.gr  = function(val){ return '<span style="color:#00FF00">' + val + '</span>'; }
-window.br  = function(val){ return '<span style="color:#C6AE79">' + val + '</span>'; }
-window.red = function(val){ return '<span style="color:red">'     + val + '</span>'; }
-window.bl  = function(val){ return '<span style="color:#00F9E0">' + val + '</span>'; }
-window.ora = function(val){ return '<span style="color:#FFA100">' + val + '</span>'; }
+window.gr  = function(val){ return '<span style="color:#00FF00">' + val + '</span>'; };
+window.br  = function(val){ return '<span style="color:#C6AE79">' + val + '</span>'; };
+window.red = function(val){ return '<span style="color:red">'     + val + '</span>'; };
+window.bl  = function(val){ return '<span style="color:#00F9E0">' + val + '</span>'; };
+window.ora = function(val){ return '<span style="color:#FFA100">' + val + '</span>'; };
+// default to http protocol
+
+
+[window.cleanProtocol,window.getDomain] = (function(){
+	var cleanProtocol_regex = new RegExp('^(?:\/\/|https?:\/\/|feed:\/\/?)','i');//^(\/\/|http:\/\/|https:\/\/|feed:\/\/)
+
+	return [
+		function(url){return url.replace(cleanProtocol_regex,'http://')},
+	 	function(url){
+		  var b,c;
+			url = url.replace(cleanProtocol_regex,'');                            // strip protocol
+			url = url.split('/')[0];                                              // discard folders
+			if((c = ( b = url.split('.') ).length) > 2){                          // discard sub domains
+				url = ( b[c-2] == 'co' ? b[c-3] + '.co' : b[c-2]) + '.' + b[c-1]; // manage .co.dinosaur domains
+			}
+			if(url.length > 4){return url;}                                       // dispose of fakes
+		}
+	]
+})();
+
+//window.getDomain = window.cleanProtocol[1];
+//window.cleanProtocol = window.cleanProtocol[0];
+
+
+
+
+
 
 // create sets
 
@@ -120,29 +148,31 @@ window.unsubscribe_set           = new Set(window.unsubscribe);
 window.unsubscribe_fresh         = [];
 window.unsubscribe_fresh_set     = new Set([]);
 
-
-window.buildREgex_regex = new RegExp(/[-\/\\^$*+[?].()|[\]{}]/g);
-window.buildRegex = function(x){
-	x.push('asdfasddasfasdfdasfdasf');
-	var y = [];
-	x.forEach(function(x){ y.push(x.trim().replace(window.buildREgex_regex, '\\$&'));window.buildREgex_regex.lastIndex = 0;	});
-	x.pop();
-	return new RegExp( '^(' + y.join('|') + ')$','g' );
-}
+window.buildRegex = (function(){
+	var buildREgex_regex = new RegExp(/[-\/\\^$*+[?].()|[\]{}]/g);
+	return function(x){
+		x.push('asdfasddasfasdfdasfdasf');
+		var y = [];
+		x.forEach(function(x){ y.push(x.trim().replace(buildREgex_regex, '\\$&'));buildREgex_regex.lastIndex = 0;	});
+		x.pop();
+		return new RegExp( '^(' + y.join('|') + ')$','g' );
+	}
+})();
 
 // create unsubscribe regular expressions
 
-window.unsubscribe_url = [];
-window.unsubscribe_domain = [];
-window.unsubscribe.forEach(function(x){
-	x=x.trim();
-	if(x.startsWith('feed')){       x = x.substring(5)+'http' }
-	else if(x.startsWith('https')){	x = x.substring(6)+'http' }
-  if(x.startsWith('http')){       window.unsubscribe_url.push(x) }
-	else{                           window.unsubscribe_domain.push(x) }
-});
-window.unsubscribe_url_regex = window.buildRegex(window.unsubscribe_url);
-window.unsubscribe_domain_regex = window.buildRegex(window.unsubscribe_domain);
+window.buildUnsubscribeRegex = function(){
+	var unsubscribe_url = [],
+	    unsubscribe_domain = [];
+	window.unsubscribe.forEach(function(x){
+		x=window.cleanProtocol(x.trim());
+	  if(x.startsWith('http')){       unsubscribe_url.push(x) }
+		else{                         unsubscribe_domain.push(x) }
+	});
+	window.unsubscribe_url_regex = window.buildRegex(unsubscribe_url);
+	window.unsubscribe_domain_regex = window.buildRegex(unsubscribe_domain);
+};
+window.buildUnsubscribeRegex();
 
 // create blacklist regular expressions
 
@@ -150,7 +180,7 @@ window.rss_blacklist_url = [];
 window.rss_blacklist_domain = [];
 window.rss_blacklist.forEach(function(x){
 	if(x.trim().startsWith('http')){
-		window.rss_blacklist_url.push(x.trim());
+		window.rss_blacklist_url.push(window.cleanProtocol(x.trim()));
 	}else{
 		window.rss_blacklist_domain.push(x.trim());
 	}
@@ -164,7 +194,7 @@ if(window.rss_suspended.length > 0){
 	log('stages','checking '+ ora(window.rss_suspended.length)+ ' suspended feed dates');
 	var theNow = Date.now();
 	for(x=0;x<window.rss_suspended.length;x=x+2){
-		if(isNaN(window.rss_suspended[x])){x++}
+		if(isNaN(window.rss_suspended[x])){log('suspended', window.rss_suspended[x]+' is not a date')}
 		if(window.rss_suspended[x]+172800000 < theNow){
 			if(window.rss_suspended[x+1]){ log('suspended','clearing: '+ ora(window.rss_suspended[x+1])) };
 			window.rss_suspended.splice(x,2);x=x-2;
@@ -202,29 +232,6 @@ delete window.badwords;
 
 window.noHighlight = new Set("three four five seven eight nine eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty january february march april may june july august september october november december 2015 2016 720p 1080p x264 nbsp 8217 your with this comment program national upgrade against president scientist year from body that more will have says what back more about best holiday after years video over most news just series high last first world review down life secret city before announcement week congress deal know online test york almost people photos season america american americans bluray economy make next real report school some believe than time when would build coming facts free government hand girl here home kill leak plan shows ways north east south west white following control crazy dies does food game hits into miracle much only open other stories story take they things thread tips want anxiety attack call cars change changes death early every final found gets good hike holidays lady like looking love made making master message play power price start stay there these under between become today ahead calls case charges been house biggest hard getting though amid cover work happy hard lost should thanks becoming through young around though door great sign boyfriend girlfriend across wants their could crash earth force support being children dead edition list star state storms true beyond family fans federal lost million right sheltered student woman awesome been black business camera cold cookies daily date discussion ever fashionable fighters forces gift happy intelligent kids lead least lunch mobile nick radio record reserve system talks team tech times weather where brings response called worst freedom really century energy general since update where which anti behind better community enough international legal lives look looks marriage mini minute mother movie need official plans plus post return selling spill spirit think wrong awakens bill book brand building card check country days fast feel likely proof learn giving district close everything tree help cause travel full major space spain airport favorite flight live music tree captured close internet intervention model proof security stocks trade campaign court crisis district during issue mandatory matter mission show sold traffic units updates used watch annual armed catastrophe cause central collapse configuration emergency episode event everything feds fight finds friends giving group guide heart http jubilee latest lawsuit learn left likely long mall near party popular mine inspired justice keep".split(' '));
 
-
-////////////// FUNCTIONS ////////////////////
-
-// default to http protocol
-
-window.cleanProtocol_regex = new RegExp('^(?:\/\/|https?:\/\/|feed:\/\/?)','i');//^(\/\/|http:\/\/|https:\/\/|feed:\/\/)
-window.cleanProtocol = function(url){
-	return url.replace(window.cleanProtocol_regex,'http://');
-}
-
-// get domain name from url
-
-window.getDomain = function(url){
-  var b,c;
-	url = url.replace(window.cleanProtocol_regex,'');                   // strip protocol
-	url = url.split('/')[0];                                            // discard folders
-	if((c = ( b = url.split('.') ).length) > 2){                        // discard sub domains
-		url = ( b[c-2] == 'co' ? b[c-3] + '.co' : b[c-2]) + '.' + b[c-1]; // manage .co.dinosaur domains
-	}
-	if(url.length > 4){return url;}                                     // dispose of fakes
-}
-
-
 // hide undesired table column (switching it on/off doesn't modify old news)
 
 if(window.pref.feed_origin == "off"){
@@ -243,12 +250,13 @@ if(window.pref.feed_date == "off"){
 // unsubscribe (in stead of turning the array into a set and back we maintain both)
 
 window.unsubscribeFeed = function(badFeed){
-	if (confirm("Remove (skip) this subscription?\n\n(cancel for domain options)\n\n\n" + badFeed )){
+	badFeed = window.cleanProtocol( badFeed.trim() );
+	if (!badFeed){alert('error: feed url undefined');return;}
+	if(confirm("Remove (skip) this subscription?\n\n(cancel for domain options)\n\n\n" + badFeed )){
 		//window.unsubscribe = getValue('unsubscribe','');
 		window.unsubscribe_url_regex.lastIndex = 0;
 		window.unsubscribe_domain_regex.lastIndex = 0;
 		if(!unsubscribe_url_regex.test(badFeed) /* window.unsubscribe.indexOf(badFeed) == -1 */){
-			window.cleanProtocol( badFeed );
 			window.unsubscribe.push(badFeed);
 			window.unsubscribe_set.add(badFeed);
 			setValue('unsubscribe', window.unsubscribe );
@@ -303,6 +311,7 @@ window.serviceGMstorage = function(){
 
 	if(a||b){ log('blacklist', red(window.rss_blacklist_length) +' blacklisted, '+ora(window.rss_suspended.length/2)+' suspended');}
 }
+
 
 ////////////////////////// results to HTML /////////////////////////////////////
 
@@ -371,6 +380,33 @@ window.countDifferences = function(a, b) {
 }
 
 
+/* convert domain names into colors */
+
+function stringToColor(str){
+  var r   = 0,
+      g   = 0,
+      b   = 0,
+      /*turn the string into an array of numbers */
+      arr = str.split('').map(x=>x.charCodeAt(0));
+
+	/*extend the array length to be a multiple of 3*/
+  while(arr.length%3){arr.push(0)}
+
+	/* divide the character code over r,g and b */
+	for(var y=0, x=arr.length;y<x;y+=3){
+      r = (r += arr.pop())%94;
+      g = (g += arr.pop())%94;
+      b = (b += arr.pop())%94;
+    }
+    /* make a contrasting background color */
+    rb = (r + 128)%256;
+    gb = (g + 128)%256;
+    bb = (b + 128)%256;
+
+    return ['rgb('+rb+', '+gb+', '+bb+')',
+    'rgb('+r+', '+g+', '+b+')'];
+}
+
 // I'm displaying a slice of an array sorted by date,
 // I push new items onto the array then sort it again,
 // the offset has to be corrected to preserve the view by finding the new index of the top item displayed
@@ -383,9 +419,11 @@ window.qelm = document.getElementById('output');
 window.qelm.style.height = window.innerHeight+'px';//"500px"
 window.last_known_scroll_position = 0;
 window.currentOffset = 0;
-window.itemArray = [];
+window.itemArray = window.localStorage.getItem('finalarray');
+if(window.itemArray){ window.itemArray = JSON.parse(window.itemArray) };
 var amount = ((qelm.clientHeight-120)/40)<<0;
 window.theLastNinja = 0;
+window.clickHistory = {};
 
 //for (i = 0; i < 100000+amount; ++i){ window.itemArray[i] = i+" "+i+" "+i+" "+i+" "+i+" "+i+" "+i+" "+i+" "+i; }
 
@@ -397,13 +435,18 @@ window.theLastNinja = 0;
 
 
 // updated array format
-
+window.lastScrollTime = Date.now();
+window.scrollTimeTravel = 1;
 window.scrollArray = function( scroll_pos ){
+	if(window.monitorMode || window.itemArray.length==0){ window.qelm.innerHTML = '';return }
+	var curScrollTime = Date.now(),
+		expiredScrollTime = curScrollTime-window.lastScrollTime,
+		accelerateTime = 0;
+	if(expiredScrollTime < 500){ window.scrollTimeTravel*=1.25 }else{ window.scrollTimeTravel=1 }
+	window.lastScrollTime = curScrollTime;
 
-	if(window.monitorMode || window.itemArray.length==0){
-		window.qelm.innerHTML = '';
-		return;
-	}
+	//document.body.style.backgroundColor = 'rgb('+(window.scrollTimeTravel<<0)+','+(window.scrollTimeTravel<<0)+','+(window.scrollTimeTravel<<0)+')';
+	//setTimeout(function(){document.body.style.backgroundColor = "#000"},500);
 
 	// check if previous newest item in view is the same as the current one
 
@@ -422,24 +465,26 @@ window.scrollArray = function( scroll_pos ){
 	// are we going up or down?
 
   if (scroll_pos > 100) {
-    window.currentOffset += ((scroll_pos - 100) / 20);
+    window.currentOffset += window.scrollTimeTravel; //((scroll_pos - 100) / 20)+window.scrollTimeTravel;
   } else if (scroll_pos < 100) {
-    window.currentOffset -= (100 - scroll_pos) / 20;
+    window.currentOffset -= window.scrollTimeTravel; //((100 - scroll_pos) / 20)+window.scrollTimeTravel;
   }
 	window.currentOffset = window.currentOffset<<0;
 
 	// must not attempt to display things outside the range
-  if (window.currentOffset >= window.itemArray.length - amount) {
-    window.currentOffset = window.itemArray.length - amount;
-  } else if (window.currentOffset < 0) {
-    window.currentOffset = 0;
-  }
+ 	if (window.currentOffset >= window.itemArray.length - amount) {
+    	window.currentOffset = window.itemArray.length - amount;
+		window.scrollTimeTravel=1;
+  	} else if (window.currentOffset < 0) {
+    	window.currentOffset = 0;
+		window.scrollTimeTravel=1;
+  	}
 
 	// number of items before top item displayed
-  var skiped = window.currentOffset<1?"top":"&laquo; "+ (window.currentOffset-1<<0);
+  	var skiped = window.currentOffset<1?"top":"&laquo; "+ (window.currentOffset);
 
 	// number of items beyond bottom item displayed
-  var togo = window.currentOffset+amount>=window.itemArray.length?"end":(window.itemArray.length-window.currentOffset-amount<<0)+" &raquo;";
+  	var togo = window.currentOffset+amount>=window.itemArray.length?"end":(window.itemArray.length-window.currentOffset-amount)+" &raquo;";
 
 	// extract array sub set
 	var subset = window.itemArray.slice(window.currentOffset, window.currentOffset + amount);
@@ -455,7 +500,7 @@ window.scrollArray = function( scroll_pos ){
 
 		// define item class
 
-		var itemClass = 'class="';
+		var itemClass = '';
 
 		// identify comments
 
@@ -469,10 +514,9 @@ window.scrollArray = function( scroll_pos ){
 		// class for undefined source
 
 		if(subset[x][4] == "not defined"){   itemClass += ' autodetect'  }
-		itemClass += '"';
+
 
 		// try to obtain the host url
-
 
 		if(subset[x][2].indexOf('feedproxy.google.com')>0
 		&& subset[x][2].indexOf('feedproxy.google.com')<9
@@ -490,6 +534,18 @@ window.scrollArray = function( scroll_pos ){
 		var andMinutes = minutesAgo - (hoursAgo * 60);
 		var bgcolor = (subset[x][0]+0).toString(5).slice(8,14)
 
+		var col = stringToColor(domainIndicator);
+
+		var visitedClass = '';
+
+		// faster visited link coloring
+		var vdomain = getDomain(subset[x][2]);
+		if(Array.isArray(window.clickHistory[ vdomain ]) && window.clickHistory[vdomain].indexOf(subset[x][2].split(vdomain)[1]) !=-1 ){
+			//alert(JSON.stringify(window.clickHistory));
+			//alert(subset[x][2].split(vdomain)[1]);
+			//window.clickHistory[vdomain].indexOf(subset[x][2].split(vdomain)[1])
+			visitedClass = ' visited';
+		}
 		outputResult.push([
 /*0*/			'<tbody><tr>',
 /*1*/					'<td rowspan="',
@@ -503,14 +559,16 @@ window.scrollArray = function( scroll_pos ){
 					subset[x][2]+
 					'">語</a> <a href="'+
 					subset[x][2]+
-					'" '+
-					itemClass +
-					' target="_blank">'+
+					'" class="'+
+					itemClass + visitedClass +
+					'" target="' +
+					window.linkTarget +
+					'">' +
 					subset[x][3]+
 					'</a></td>',
 /*7*/			   	'<td rowspan="',
 /*8*/				 	1,
-/*9*/					'">',
+/*9*/					'" style="color:'+col[0]+';background:'+col[1]+'">',
 /*10*/				domainIndicator,
 /*11*/				'</td>',
 /*12*/	  '<td>'+
@@ -572,10 +630,18 @@ window.addEventListener('scroll', function(e) {
   window.scrollArray(window.last_known_scroll_position,0);
 });
 
+document.addEventListener("click", function(e){
+	if (e.target.tagName !== 'A' || !e.target.hasAttribute('href')) return;
+	var vdomain = getDomain(e.target.href);
+	window.clickHistory[vdomain] = window.clickHistory[vdomain] || [];
+	window.clickHistory[vdomain].push(e.target.href.split(vdomain)[1]);
+	window.maxPending = 0;
+}, false);
+
 // build the html <table>
 
 window.buildTable = function(s){
-	window.itemArray = s;
+	//window.itemArray = s;
 	scrollArray(100);
 }
 
@@ -594,21 +660,27 @@ window.filterHtmlResult =  function(elem, pos){
 window.removeUnsubscribe = function(elem){
 	window.unsubscribe_url_regex.lastIndex = 0;
 	window.unsubscribe_domain_regex.lastIndex = 0;
-	return !window.unsubscribe_url_regex.test(elem[1]) && !window.unsubscribe_domain_regex.test(getDomain(elem[1]));
+	var url = window.cleanProtocol(elem[1]);
+	return !window.unsubscribe_url_regex.test(url) && !window.unsubscribe_domain_regex.test(getDomain(url));
 }
 
 /////////////            ///////////////             /////////////////
 
-//window.removeUnsubscribe_set = function(elem){
-//	return !window.unsubscribe_set.has(elem[3]) && !window.unsubscribe_set.has(getDomain(elem[3]));
-//}
-
 // update localstorrage with fresh results
-
 window.updateStoredResult = function(s){
 
 	// merge old results
 
+	if(window.itemArray){
+		log('parse_html', 'merging '+gr(s.length)+' new news with '+gr(window.itemArray.length)+' old news');
+		for(var x=0;x<s.length;x++){
+			len = window.itemArray.length, start = 0;
+			while((len /= 2) > 1){ start += window.itemArray[Math.ceil( start + len )][0]>s[x][0]?len:0 }
+			window.itemArray.splice(Math.ceil(start + (window.itemArray[Math.ceil(start)][0] > s[x][0])),0,s[x]);
+		}
+	}
+
+	/*
 	var y = window.localStorage.getItem('finalarray');
 
 	if(y){
@@ -618,46 +690,50 @@ window.updateStoredResult = function(s){
 		log('parse_html', 'merging '+gr(s.length)+' new news with '+gr(y.length)+' old news');
 		var s = s.concat(y);
 	}
+	*/
 
-	// Sort the item array by time /////////////////////////// this might work better with an empty sort() calling tostring
+	/*// sorting obsoleeted by binary search insert above
+
+	// Sort the item array by time // this might work better with an empty sort() calling tostring
 
 	log('parse_html','sorting '+ora(s.length)+' items by date.');
 	s.sort(function(a,b){ return b[0] - a[0] });
+	*/
 
 	// remove unsubscribed items
 
 	window.unsubscribe_url_regex.lastIndex = 0;
 	window.unsubscribe_domain_regex.lastIndex = 0;
-	s = s.filter(window.removeUnsubscribe)
-	log('parse_html',' after removing unsubscribed items '+ora(s.length)+' items remain.');
+	window.itemArray = window.itemArray.filter(window.removeUnsubscribe)
+	log('parse_html',' after removing unsubscribed items '+ora(window.itemArray.length)+' items remain.');
 
 	// trim results	by preference
 
-	if(s.length > window.pref.items_to_keep){
-		log('parse_html', 'trimming news item list from '+red(s.length)+' to '+gr(window.pref.items_to_keep));
-		s.splice(window.pref.items_to_keep,999999999);
+	if(window.itemArray.length > window.pref.items_to_keep){
+		log('parse_html', 'trimming news item list from '+red(window.itemArray.length)+' to '+gr(window.pref.items_to_keep));
+		window.itemArray.splice(window.pref.items_to_keep,999999999);
 	}
 
 	// trim results by local storage maximum
 
-	var sJSON = JSON.stringify(s);
+	var sJSON = JSON.stringify(window.itemArray);
 	while(sJSON.length  > 2636625){
-		s.pop();
-		sJSON = JSON.stringify(s);
-		log('parse_html', 'trimming news item to fit in storage<br>' + red(s.length) + ' items remaining ');
+		window.itemArray.pop();
+		sJSON = JSON.stringify(window.itemArray);
+		log('parse_html', 'trimming news item to fit in storage<br>' + red(window.itemArray.length) + ' items remaining ');
 	}
 
 	// make new title array
 
-	window.titleResult = s.map(function(d){ return d[3] });
+	window.titleResult = window.itemArray.map(function(d){ return d[3] });
 	window.titleResult_set = new Set(window.titleResult);
 	if(window.titleResult_set.size != window.titleResult.length){
-		var sLength = s.length;
-		var f = s.map(function(d){ return d[2] });
-		var g = s.map(function(d){ return d[3] });
-		s = s.filter(window.filterHtmlResult,[f,g]);
-		log('parse_html', (sLength-s.length) + ' duplicate titles removed');
-		sJSON = JSON.stringify(s);
+		var sLength = window.itemArray.length;
+		var f = window.itemArray.map(function(d){ return d[2] });
+		var g = window.itemArray.map(function(d){ return d[3] });
+		window.itemArray = window.itemArray.filter(window.filterHtmlResult,[f,g]);
+		log('parse_html', (sLength-window.itemArray.length) + ' duplicate titles removed');
+		sJSON = JSON.stringify(window.itemArray);
 	}
 
 	// store new results
@@ -666,9 +742,9 @@ window.updateStoredResult = function(s){
 
 	// obtain oldest result date
 
-	if(s.length >= window.pref.items_to_keep){ window.oldestEntry =  s[s.length-1][0] ;
+	if(window.itemArray.length >= window.pref.items_to_keep){ window.oldestEntry =  window.itemArray[window.itemArray.length-1][0] ;
 	}else{ window.oldestEntry = 0 }
-	return s;
+	return window.itemArray;
 }
 
 // perform big update (rebuilding the table is faster than inserting many rows)
@@ -686,7 +762,7 @@ window.bigUpdate = function(x){
 	if(xLength-x.length){log('parse_html', red(xLength-x.length) + ' item'+(xLength-x.length>1?'s':'')+' removed')}
 	var HTMLresultX = window.updateStoredResult(x);
 	var HTMLresultXlength = HTMLresultX.length;
-	if(window.pref.highlight_frequent_words != "off"){ // https://jsfiddle.net/5hk6329u/
+	if(false && window.pref.highlight_frequent_words != "off"){ // https://jsfiddle.net/5hk6329u/
 		var words = window.titleResult.join(' ').toLowerCase().split(/\W+/g).sort();
 		var result = [];
 		for (var x = 0; x < words.length; x++) {
@@ -772,87 +848,6 @@ window.renewResults1 = function(forceUpdate){
 	setTimeout((function(){renewResults(x)}).bind(0,forceUpdate),100)
 }
 
-window.window.regexParser = {};
-
-//////////////////////// parse xml responses //////////////////////////////////
-
-// encode html entities
-
-window.htmlEncode = function( htmlToEncode ) {
-	var virtualDom = document.createElement( 'div' );
-    virtualDom.appendChild( document.createTextNode( htmlToEncode ) );
-    return virtualDom.innerHTML;
-}
-
-// test attributes
-
-window['testAtr'] = function(xml , testThis , atr, defaultVal){
-	if( xml.contains( xml.getElementsByTagName(testThis)[0] ) &&
-	xml.getElementsByTagName(testThis)[0].hasAttribute(atr) ){
-		return htmlEncode( xml.getElementsByTagName(testThis)[0].getAttribute(atr) )
-	}
-	//return defaultVal ;
-}
-
-// test attributes with regex (if dom parser fails)
-
-window['testAtrRegex'] = function(xml , testThis , atr){
-	//log('regex_parser', 'get '+ bl(testThis + ' ' + atr));
-	window.regexParser[testThis+atr] =
-		window.regexParser[testThis+atr] ||	new RegExp("<"+testThis+"[\\s\\S]+?"+atr+"=['\"]([^'\">]+)","g");
-	var val = window.regexParser[testThis+atr].exec(xml);
-	window.regexParser[testThis+atr].lastIndex = 0;
-	//log('regex_parser', (val!=null)?val[1]:'non found');
-	if(val != null) return  htmlEncode( val[1] );
-}
-
-// test elements
-
-window['testElm'] = function(xml , testThis){
-	var elm, val;
-	for(var x=0;x<testThis.length;x++){
-		if( xml.contains( elm=xml.getElementsByTagName(testThis[x])[0] ) ){
-			if(xml.contains( elm.childNodes[0] ) ){
-				val = htmlEncode( elm.childNodes[0].nodeValue );
-				if(val.trim() !="")	return val;
-			}
-			return htmlEncode( elm.textContent );
-		}
-	}
-}
-
-// test elements with regex (if dom parser fails)
-
-window['testElmRegex'] = function(xml , testThis){
-	for(var x=0;x<testThis.length;x++){
-		window.regexParser[testThis[x]] = window.regexParser[testThis[x]] || new RegExp("<" + testThis[x] + "[^>]*?>([^<]+)","g");
-		var val = window.regexParser[testThis[x]].exec(xml);
-		window.regexParser[testThis[x]].lastIndex = 0;
-		if(val != null){
-			return htmlEncode( val[1] );
-		}
-	}
-}
-
-// get elements by tag name
-
-window['getTags'] = function(a,b){ return a.getElementsByTagName(b) }
-
-// get elements by tag name with "regex" (if dom parser fails)
-
-window['getTagsRegex'] = function(a,b){ a = a.split('<'+b);	a.shift(); return a }
-
-// remove response from pending feed list
-
-window.removePending = function(x){
-	for(var i=0;i < window.pending_feeds.length;i++){
-		if(window.pending_feeds[i][1] == x){
-			window.pending_feeds.splice(i,1);
-			break;
-		}
-	}
-}
-
 // load the feeds
 window.pendingBussy = false;
 window.pending_feeds = [];
@@ -865,16 +860,21 @@ window.loadFeedsInterval = function(){
 			currentOrigin = currentFeed[1].trim();
 			currentFeed   = currentFeed[0].trim();
 		}
+
+		// skip blacklisted, unsubscribed and suspended feed urls
+
 		window.rss_blacklist_url_regex.lastIndex = 0;
 		window.unsubscribe_url_regex.lastIndex = 0;
 		window.suspended_regex.lastIndex = 0;
-		if(currentFeed &&
-			!window.rss_blacklist_url_regex.test(currentFeed) &&
-			!window.unsubscribe_url_regex.test(currentFeed) &&
-			!window.suspended_regex.test(currentFeed)){
+		var baseProtocol = window.cleanProtocol(currentFeed.trim());
+		if(baseProtocol &&
+			!window.rss_blacklist_url_regex.test(baseProtocol) &&
+			!window.unsubscribe_url_regex.test(baseProtocol) &&
+			!window.suspended_regex.test(baseProtocol)){
+
+			// skip blacklisted and unsubscribed domains
 
 			var feedDomain = getDomain(currentFeed);
-
 			window.rss_blacklist_domain_regex.lastIndex = 0;
 			window.unsubscribe_domain_regex.lastIndex = 0;
 			if(feedDomain &&
@@ -889,34 +889,29 @@ window.loadFeedsInterval = function(){
 						method:     'GET',
 						url:        window.cleanProtocol(reqestUrl),
 						onload:     function(response){
-										setTimeout(
-											(function(response, reqestUrl, requestOrigin){
-												window.parseFeed( response, reqestUrl, requestOrigin )
-											}).bind(undefined, response, reqestUrl, requestOrigin)
-										,0)
-									},
-						/*function(response){ window.parseFeed( response, reqestUrl, requestOrigin ) },*/
+													window.parseFeed[0]( response, reqestUrl, requestOrigin )
+												},
 						timeout:    window.pref.wait_for_rss*1000,
 						onerror:    function(){
-										window.rss_blacklist.push( reqestUrl );
-										window.removePending(reqestUrl)
-										window.feedResponses++;
-										log('rss_request_url', window.feedsRequested + ' ' + red(reqestUrl));
-										log('failure_request_error', red( reqestUrl ) );
-										return;
-									},
+													window.rss_blacklist.push( reqestUrl );
+													window.removePending(reqestUrl)
+													window.feedResponses++;
+													log('rss_request_url', window.feedsRequested + ' ' + red(reqestUrl));
+													log('failure_request_error', red( reqestUrl ) );
+													return;
+												},
 						ontimeout:  function(){
-										window.rss_blacklist.push( reqestUrl );
-										window.removePending(reqestUrl)
-										window.feedResponses++;
-										log('timeout',red( reqestUrl ))
-									},
+													window.rss_blacklist.push( reqestUrl );
+													window.removePending(reqestUrl)
+													window.feedResponses++;
+													log('timeout',red( reqestUrl ))
+												},
 						onabort:   function(){
-										window.rss_blacklist.push( reqestUrl );
-										window.removePending(reqestUrl)
-										window.feedResponses++;
-										log('aborted',red( reqestUrl ))
-									}
+													window.rss_blacklist.push( reqestUrl );
+													window.removePending(reqestUrl)
+													window.feedResponses++;
+													log('aborted',red( reqestUrl ))
+											 }
 					})]);
 				})(currentFeed,currentOrigin);
 			}else{
@@ -934,355 +929,369 @@ window.loadFeedsInterval = function(){
 	}
 }
 
-// feed loading interval trigger
+// remove response from pending feed list
 
-/*
-window.requestInterval = false;
-window.requestInterval2 = false;
-
-window.loadFeeds = function(nextT){
-	window.nextTask = nextT;
-	window.lastParse = Date.now();
-	if(window.requestInterval){
-		clearInterval(window.requestInterval);
-		clearInterval(window.requestInterval2);
+window.removePending = function(x){
+	for(var i=0;i < window.pending_feeds.length;i++){
+		if(window.pending_feeds[i][1] == x){
+			window.pending_feeds.splice(i,1);
+			break;
+		}
 	}
-	window.requestInterval = setInterval(window.loadFeedsInterval, window.pref.rss_loading_delay*1);
-	window.requestInterval2 = setInterval(window.loadFeedsInterval, window.pref.rss_loading_delay*1)
 }
-*/
 
-// parse the feeds
+//////////////////////// parse xml responses //////////////////////////////////
 
-window.itemPubDate_regex = new RegExp("<item>[\\s\\S]+?<pubDate>([^<]+)","g");
-window.parseFeed = function( response, areqestedUrl, requestedOrigin ){
+buildParser = function(){
 
-	reqestedUrl = window.cleanProtocol(areqestedUrl);
-	/*
-	if(areqestedUrl.trim().startsWith('feed')){
-		var reqestedUrl = 'http'+areqestedUrl.substring(4);
-  }else if(areqestedUrl.trim().startsWith('https'){
-		var reqestedUrl = 'http'+areqestedUrl.substring(5);
-	}else{
-		var reqestedUrl = areqestedUrl;
-	}
-	*/
-	window.lastParse = Date.now();
+		var regexParser     = {},
+		    lastDateError   = 0,
+		    noNewItems      = 0,
+				consideredFeeds = 0;
 
-	setTimeout((function(x){
-		window.feedResponses++;
-		log('rss_response_url', window.feedResponses + ' ' + gr(response.finalUrl));
-		window.removePending(x);
-	}).bind(undefined, reqestedUrl),0);
+		// encode html entities
 
-	// get rid of everything with a <script tag in it
+		var htmlEncode = function( htmlToEncode ) {
+			var virtualDom = document.createElement( 'div' );
+		    virtualDom.appendChild( document.createTextNode( htmlToEncode ) );
+		    return virtualDom.innerHTML;
+		}
 
-	if(window.pref.blacklist_feed_with_script && response.responseText.indexOf('<script') !=-1){
-		log('error_found_script', 'found script tag in '+ora(reqestedUrl) );
-		window.rss_blacklist.push( reqestedUrl );
-		return;
-	}
+		// test attributes
 
+		var testAtr = function(xml , testThis , atr, defaultVal){
+			if( xml.contains( xml.getElementsByTagName(testThis)[0] ) &&
+			xml.getElementsByTagName(testThis)[0].hasAttribute(atr) ){
+				return htmlEncode( xml.getElementsByTagName(testThis)[0].getAttribute(atr) )
+			}
+			//return defaultVal ;
+		}
 
-	// date 1  - quickly check the first 6 dates before parsing the xml
+		// test attributes with regex (if dom parser fails)
 
-	var i=0;
-	var pub;
-	var pubD;
-	window.itemPubDate_regex.lastIndex = 0;
-	pub = itemPubDate_regex.exec(response.responseText);
-	if(pub!=null){ // no date was found, skipping rest of test
-		pubD = Date.parse(pub[1]);
-		if(!isNaN(pubD) && pubD < window.oldestEntry){
-			do{ // the first date was valid but not newer than the oldest entry
-				pub = itemPubDate_regex.exec(response.responseText);
-				if(pub==null){                            // no new news found
-					log('no_new_items', (++window.noNewItems) + ' ' +ora(reqestedUrl));
-					return;
+		var testAtrRegex = function(xml , testThis , atr){
+			//log('regex_parser', 'get '+ bl(testThis + ' ' + atr));
+			regexParser[testThis+atr] =
+				regexParser[testThis+atr] ||	new RegExp("<"+testThis+"[\\s\\S]+?"+atr+"=['\"]([^'\">]+)","g");
+			var val = regexParser[testThis+atr].exec(xml);
+			regexParser[testThis+atr].lastIndex = 0;
+			//log('regex_parser', (val!=null)?val[1]:'non found');
+			if(val != null) return  htmlEncode( val[1] );
+		}
+
+		// test elements
+
+		var testElm = function(xml , testThis){
+			var elm, val;
+			for(var x=0;x<testThis.length;x++){
+				if( xml.contains( elm=xml.getElementsByTagName(testThis[x])[0] ) ){
+					if(xml.contains( elm.childNodes[0] ) ){
+						val = htmlEncode( elm.childNodes[0].nodeValue );
+						if(val.trim() !="")	return val;
+					}
+					return htmlEncode( elm.textContent );
 				}
+			}
+		}
+
+		// test elements with regex (if dom parser fails)
+
+		var testElmRegex = function(xml , testThis){
+			for(var x=0;x<testThis.length;x++){
+				regexParser[testThis[x]] = regexParser[testThis[x]] || new RegExp("<" + testThis[x] + "[^>]*?>([^<]+)","g");
+				var val = regexParser[testThis[x]].exec(xml);
+				regexParser[testThis[x]].lastIndex = 0;
+				if(val != null){
+					return htmlEncode( val[1] );
+				}
+			}
+		}
+
+		// get elements by tag name
+
+		var getTags = function(a,b){ return a.getElementsByTagName(b) }
+
+		// get elements by tag name with "regex" (if dom parser fails)
+
+		var getTagsRegex = function(a,b){ a = a.split('<'+b);	a.shift(); return a }
+
+		var pendingParser = [];
+		var itemPubDate_regex = new RegExp("<item>[\\s\\S]+?<pubDate>([^<]+)","g");
+		return [
+			function( response, reqestedUrl, requestOrigin ){
+				pendingParser.push({
+					response        : response,
+					reqestedUrl     : reqestedUrl,
+					requestOrigin   : requestOrigin
+				})},
+			function(){
+
+			if(pendingParser.length==0){return}
+			var pain = Math.floor(document.getElementsByTagName('meter')[0].value);
+			log('pending_parsing', 'browser lag is '+pain+' (lower is better)');
+			log('pending_parsing', ora(pendingParser.length) +' responses awaiting parsing' );
+			var task = pendingParser.pop();
+			lastParse = Date.now();
+
+			setTimeout((function(x){
+				window.feedResponses++;
+				log('rss_response_url', window.feedResponses + ' ' + gr(task.response.finalUrl));
+				window.removePending(x);
+			}).bind(undefined, task.reqestedUrl),0);
+
+			// get rid of everything with a <script tag in it
+
+			if(window.pref.blacklist_feed_with_script && task.response.responseText.indexOf('<script') !=-1){
+				log('error_found_script', 'found script tag in '+ora(task.reqestedUrl) );
+				window.rss_blacklist.push( task.reqestedUrl );
+				return;
+			}
+
+			// date 1  - quickly check the first 6 dates before parsing the xml
+
+			var i=0;
+			var pub;
+			var pubD;
+			itemPubDate_regex.lastIndex = 0;
+			pub = itemPubDate_regex.exec(task.response.responseText);
+			if(pub!=null){ // no date was found, skipping rest of test
 				pubD = Date.parse(pub[1]);
-				if(isNaN(pubD)){ continue }               // skip broken dates
-				if(pubD > window.oldestEntry){ break }    // new item found!
-				if(i>=6){                                 // no new news found
-					log('no_new_items', (++window.noNewItems) + ' ' +ora(reqestedUrl));
-					return;
-				}
-			}while(++i)
-		}
-	}
-
-	// try to use the dom parser
-
-	var xml = new DOMParser();
-	xml = xml.parseFromString(response.responseText.trim(), "text/xml");
-	if(xml.documentElement.nodeName == "parsererror"){
-
-		// if the dom parser doesn't work use regex
-
-		xml = response.responseText;
-		var parser = {
-			testAtri : window.testAtrRegex,
-			testEleme : window.testElmRegex,
-			getTagNames : window.getTagsRegex,
-			type : 'regex'
-		}
-	}else{
-		var parser = {
-			testAtri : window.testAtr,
-			testEleme : window.testElm,
-			getTagNames : window.getTags,
-			type : 'dom'
-		}
-	}
-
-	// gather items
-
-	var feedItems = parser.getTagNames(xml,"item")
-
-	if(feedItems.length === 0 || !feedItems ){
-		feedItems = parser.getTagNames(xml,"entry");
-	}
-
-	if(feedItems.length === 0){
-		log('failure_no_items_in_feed', window.feedResponses + ' ' + ora( reqestedUrl ));
-		//window.rss_suspended_set.add(reqestedUrl);
-		window.rss_suspended.push(Date.now());
-		window.rss_suspended.push(reqestedUrl);
-		return;
-	}
-	var lastNoNew  = "";
-	var logNoNew   = false;
-	var newItem    = 0;
-	var maxLength = feedItems.length;
-	//try{
-		for(var itemNr = 0; itemNr < maxLength; itemNr++ ){
-			var feedItemsNode = feedItems[itemNr];
-
-			// date 2
-
-			var itemPubDate = parser.testEleme(feedItemsNode,["pubDate"]);
-			if(itemPubDate && Date.parse( itemPubDate ) < window.oldestEntry){
-				if( lastNoNew != reqestedUrl){
-					lastNoNew = reqestedUrl;
-					logNoNew  = true;
-				}
-				continue;
-			}
-
-			// link
-
-			var itemLink  = parser.testEleme(feedItemsNode , ["link","guid"]) || parser.testAtri(feedItemsNode , "link" , "href") || parser.testAtri(feedItemsNode , "enclosure" , "url")
-			if(!itemLink && parser.type==='dom'){
-				var serializer = new XMLSerializer();
-				var feedItemTextNode = serializer.serializeToString(feedItemsNode)
-				itemLink  = window.testElmRegex(feedItemTextNode,["link","guid"]) || window.testAtrRegex(feedItemTextNode,"link","href") || window.testAtrRegex(feedItemTextNode,"enclosure","url");
-				if(!itemLink){log('no_link',  red(response.finalUrl));continue}
-			}
-			if(!itemLink || !window.cleanProtocol(itemLink.trim()).startsWith('http')){continue}
-			itemLink = window.cleanProtocol(itemLink.trim());
-
-			// title
-
-			var itemTitle = parser.testEleme(feedItemsNode,["title"]);
-			if( !itemTitle || itemTitle.length<3){
-				itemTitle = parser.testEleme(feedItemsNode,["description"])
-				if( !itemTitle || itemTitle.length<3){
-					itemTitle = parser.testEleme(feedItemsNode,["summary"])
-					if( !itemTitle ){
-						//log('no_title', red(response.finalUrl));
-						var h = itemLink.split('/');
-						h = h.reduce(function(a,b){ return (a.length>b.length)?a:b});
-						h = h.replace(/([-_]|\.html|\.php)/g,' ');
-						itemTitle = h.charAt(0).toUpperCase() + h.slice(1);
-					}
-				}
-			}
-			itemTitle = itemTitle.trim();
-			if(itemTitle.length > 100){ itemTitle = itemTitle.substring(0,100)+"..." }
-
-			/*
-			var itemLink  = parser.testEleme(feedItemsNode , ["link","guid"]);
-			if( ! itemLink || itemLink.indexOf('http') == -1){
-				itemLink = parser.testAtri(feedItemsNode , "link" , "href") ||
-				parser.testAtri(feedItemsNode , "enclosure" , "url")
-			}
-
-			if( !itemLink ){ // try regex
-				var serializer = new XMLSerializer();
-				var feedItemTextNode = serializer.serializeToString(feedItemsNode)
-			    itemLink  = window.testElmRegex(feedItemTextNode,["link","guid"]);
-
-				if( ! itemLink || itemLink.indexOf('http') == -1){
-					itemLink = window.testAtrRegex(feedItemTextNode,"link","href") ||
-					window.testAtrRegex(feedItemTextNode,"enclosure","url")
-				}
-			}
-			if( !itemLink || itemLink.indexOf('http') == -1 ){
-				log('no_link',  red(response.finalUrl));
-				continue;
-			}
-			itemLink = itemLink.trim()
-			*/
-
-			// date 3
-
-			itemPubDate = itemPubDate || parser.testEleme(feedItemsNode,["published","created","dc:date","updated","modified","atom:updated"]);
-
-			// try find date in url like  /2015/12/26/ ==> 2015-12-28T00:00:00+00:00
-
-			if( ! itemPubDate ){// /\/?(\d{1,4})\/(\d{1,2})\/(\d{0,2})/
-				var lDArray = itemLink.match(/\/?(\d{1,4})\/(\d{1,2})(?:\/(\d{0,2})|)/);
-				var curDate = new Date();
-				var da = curDate.getFullYear();
-				var db = "01";
-				var dc = "01";
-				if(lDArray && lDArray[1] && lDArray[2]){// looks like a date?
-					if(!lDArray[3]){ // when only 2 numbers in url, first might be the month or the year
-						if((1*lDArray[1]) <= 12){ // smaller than 13 must be a month (at least up to 2100)
-							lDArray.unshift('');
-							// if the month is or comes before this one assume publication this year
-							if((1*lDArray[2]) <= curDate.getMonth()+1){	lDArray[1]=da }
-							// if the month comes after this month publication must have been last year
-							else{ lDArray[1]=da-1 }
+				if(!isNaN(pubD) && pubD < window.oldestEntry){
+					do{ // the first date was valid but not newer than the oldest entry
+						pub = itemPubDate_regex.exec(task.response.responseText);
+						if(pub==null){                            // no new news found
+							log('no_new_items', (++noNewItems) + ' ' +ora(task.reqestedUrl));
+							return;
 						}
-					}
-					// extend 2 digit year
-					if((lDArray[1]+'').length == 2){ lDArray[1]= "20"+lDArray[1] }
-					if((lDArray[1]+'').length == 4 && 1*lDArray[1] <= da){
-						da = lDArray[1];
-						if( lDArray[2] && (lDArray[2]+'').length == 1){ lDArray[2]= "0"+lDArray[2] }
-						if( lDArray[2] && (1*lDArray[2]) <= curDate.getMonth()+1){
-							db = lDArray[2];
-							if((lDArray[3]+'').length == 1){ lDArray[3]= "0"+lDArray[3] }
-							if(lDArray[3] && 1*lDArray[3] <= curDate.getDate()){
-								dc = lDArray[3];
-							}
+						pubD = Date.parse(pub[1]);
+						if(isNaN(pubD)){ continue }               // skip broken dates
+						if(pubD > window.oldestEntry){ break }    // new item found!
+						if(i>=6){                                 // no new news found
+							log('no_new_items', (++noNewItems) + ' ' +ora(task.reqestedUrl));
+							return;
 						}
-						itemPubDate = da+"-"+db+"-"+dc+"T00:00:00+00:00"
-					}
+					}while(++i)
 				}
 			}
 
-			// date 3 (any date in xml)
+			// try to use the dom parser
 
-			itemPubDate = itemPubDate || parser.testEleme( xml , ["modified","updated","atom:updated","published","created","dc:date","lastBuildDate","pubDate"] )
-			if( itemPubDate ){
-				itemPubDate = itemPubDate.trim();
-				if( isNaN( Date.parse( itemPubDate ))){
-					var chunks = itemPubDate.split(' '); // try correct 2 digit years
-					if(chunks[3] && chunks[3].length == 2){
-						chunks[3] = '20'+chunks[3]; itemPubDate = chunks.join(' ');
-					}
-					//itemPubDate = itemPubDate.split(' PM ').join(' '); // try correct PM
-				}
+			var xml = new DOMParser();
+			xml = xml.parseFromString(task.response.responseText.trim(), "text/xml");
+			if(xml.documentElement.nodeName == "parsererror"){
 
-			}
+				// if the dom parser doesn't work use regex
 
-			// fix further date errors
-
-			if(isNaN( Date.parse( itemPubDate ))){
-				if(window.lastDateError != reqestedUrl){
-					log('failure_date_error', red( itemPubDate ) + ':<br>' + ora( reqestedUrl ));
-					window.lastDateError = reqestedUrl;
-				}
-				itemPubDate = "Mon, 18 Mar 1974 00:00:00 +0000";
-			}else if( Date.now() <  Date.parse( itemPubDate ) ){
-				log('failure_future_date_error', red( itemPubDate ) + ' = ' + red( new Date( itemPubDate ).toLocaleTimeString() ) + '<br>' + ora( reqestedUrl ));
-				continue;
-			}
-			if(!(Date.parse( itemPubDate ) > window.oldestEntry)){
-				if( lastNoNew != reqestedUrl){
-					lastNoNew = reqestedUrl;
-					logNoNew   = true;
-				}
-				continue;
-			}
-
-			// did we have this exact title already?
-
-			if(!window.titleResult_set.has(itemTitle) ){
-				log("title_result", (++window.titleCount) + ' ' + ora(itemTitle));
-
-				// filter out titles with badwords
-
-				var stripTitle = itemTitle.slice(0).toLowerCase().replace(/[^a-z0-9]/g, " ");
-				var titleArray = stripTitle.split(' ');
-				var longEnough = titleArray.length >= window.pref.minimum_number_of_words_in_a_title;
-				window.badwords_regex.lastIndex = 0;
-				if( longEnough ){
-					if( !window.badwords_regex.test(stripTitle) ){
-
-						window.titleResult.push( itemTitle );
-
-						//var tada = new Date(itemPubDate);
-						var timeZone = '';//tada.getTimezoneOffset();
-
-						/*
-						https://tools.ietf.org/html/rfc822.html
-						zone        =  "UT"  / "GMT"                ; Universal Time
-                                                 ; North American : UT
-                 /  "EST" / "EDT"                ;  Eastern:  - 5/ - 4
-                 /  "CST" / "CDT"                ;  Central:  - 6/ - 5
-                 /  "MST" / "MDT"                ;  Mountain: - 7/ - 6
-                 /  "PST" / "PDT"                ;  Pacific:  - 8/ - 7
-                 /  1ALPHA                       ; Military: Z = UT;
-                                                 ;  A:-1; (J not used)
-                                                 ;  M:-12; N:+1; Y:+12
-                 / ( ("+" / "-") 4DIGIT )        ; Local differential
-                                                 ;  hours+min. (HHMM)
-
-     5.2.  SEMANTICS
-
-          If included, day-of-week must be the day implied by the date
-     specification.
-
-          Time zone may be indicated in several ways.  "UT" is Univer-
-     sal  Time  (formerly called "Greenwich Mean Time"); "GMT" is per-
-     mitted as a reference to Universal Time.  The  military  standard
-     uses  a  single  character for each zone.  "Z" is Universal Time.
-     "A" indicates one hour earlier, and "M" indicates 12  hours  ear-
-     lier;  "N"  is  one  hour  later, and "Y" is 12 hours later.  The
-     letter "J" is not used.  The other remaining two forms are  taken
-     from ANSI standard X3.51-1975.  One allows explicit indication of
-     the amount of offset from UT; the other uses  common  3-character
-     strings for indicating time zones in North America.
-		 */
-
-		 				 window['HTMLresultA'][0].unshift([
-						 /*[0]*/ 	  Date.parse( itemPubDate ),
-						 /*[1]*/		reqestedUrl,
-						 /*[2]*/		itemLink,
-						 /*[3]*/		itemTitle,
-						 /*[4]*/		requestedOrigin ]);
-						itemPubDate = false;
-						itemLink    = false;
-						itemTitle   = false;
-						logNoNew    = false;
-						lastNoNew   = reqestedUrl;
-						newItem++;
-						if(newItem >= window.pref.items_per_rss_feed){break}
-
-					// describe errors and filtered items
-
-					}else{
-						//log('word_filter', red(++window.titlesFiltered) + ' titles discarded');
-					}
-				}else{
-					//log('to_short',(++window.toShortTitles)+' '+red(itemTitle));
+				xml = task.response.responseText;
+				var parser = {
+					testAtri    : testAtrRegex,
+					testEleme   : testElmRegex,
+					getTagNames : getTagsRegex,
+					type        : 'regex'
 				}
 			}else{
-				//log('duplicate_title', (++window.duplicateTitles) + ' ' + red(itemTitle));
+				var parser = {
+					testAtri    : testAtr,
+					testEleme   : testElm,
+					getTagNames : getTags,
+					type        : 'dom'
+				}
 			}
-		}
-		if(logNoNew){ log('no_new_items', (++window.noNewItems) + ' ' + bl(reqestedUrl) ) }
-		if(newItem){ log('considered', (++window.consideredFeeds) + ' ' + ora(reqestedUrl)) }
-	/*}catch(e){
-		window['rss_blacklist'].push( reqestedUrl.trim() );
-		//window.addDomainRss_blacklist(reqestedUrl.trim())
-		log('failure_try_parse_error', red(reqestedUrl) + ' : ' + e);
-		return;
-	}*/
+
+			// gather items
+
+			var feedItems = parser.getTagNames(xml,"item")
+
+			if(feedItems.length === 0 || !feedItems ){
+				feedItems = parser.getTagNames(xml,"entry");
+			}
+
+			if(feedItems.length === 0){
+				log('failure_no_items_in_feed', window.feedResponses + ' ' + ora( task.reqestedUrl ));
+				//window.rss_suspended_set.add(task.reqestedUrl);
+				window.rss_suspended.push(Date.now());
+				window.rss_suspended.push(task.reqestedUrl);
+				return;
+			}
+			var lastNoNew  = "";
+			var logNoNew   = false;
+			var newItem    = 0;
+			var maxLength = feedItems.length;
+			//try{
+				for(var itemNr = 0; itemNr < maxLength; itemNr++ ){
+					var feedItemsNode = feedItems[itemNr];
+
+					// date 2
+
+					var itemPubDate = parser.testEleme(feedItemsNode,["pubDate"]);
+					if(itemPubDate && Date.parse( itemPubDate ) < window.oldestEntry){
+						if( lastNoNew != task.reqestedUrl){
+							lastNoNew = task.reqestedUrl;
+							logNoNew  = true;
+						}
+						continue;
+					}
+
+					// link
+
+					var itemLink  = parser.testEleme(feedItemsNode , ["link","guid"]) || parser.testAtri(feedItemsNode , "link" , "href") || parser.testAtri(feedItemsNode , "enclosure" , "url")
+					if(!itemLink && parser.type==='dom'){
+						var serializer = new XMLSerializer();
+						var feedItemTextNode = serializer.serializeToString(feedItemsNode)
+						itemLink  = testElmRegex(feedItemTextNode,["link","guid"]) || testAtrRegex(feedItemTextNode,"link","href") || testAtrRegex(feedItemTextNode,"enclosure","url");
+						if(!itemLink){log('no_link',  red(task.response.finalUrl));continue}
+					}
+					if(!itemLink || !window.cleanProtocol(itemLink.trim()).startsWith('http')){continue}
+					itemLink = window.cleanProtocol(itemLink.trim());
+
+					// title
+
+					var itemTitle = parser.testEleme(feedItemsNode,["title"]);
+					if( !itemTitle || itemTitle.length<3){
+						itemTitle = parser.testEleme(feedItemsNode,["description"])
+						if( !itemTitle || itemTitle.length<3){
+							itemTitle = parser.testEleme(feedItemsNode,["summary"])
+							if( !itemTitle ){
+								//log('no_title', red(task.response.finalUrl));
+								var h = itemLink.split('/');
+								h = h.reduce(function(a,b){ return (a.length>b.length)?a:b});
+								h = h.replace(/([-_]|\.html|\.php)/g,' ');
+								itemTitle = h.charAt(0).toUpperCase() + h.slice(1);
+							}
+						}
+					}
+					itemTitle = itemTitle.trim();
+					if(itemTitle.length > 200){ itemTitle = itemTitle.substring(0,200)+"..." }
+
+					// date 3
+
+					itemPubDate = itemPubDate || parser.testEleme(feedItemsNode,["published","created","dc:date","updated","modified","atom:updated"]);
+
+					// try find date in url like  /2015/12/26/ ==> 2015-12-28T00:00:00+00:00
+
+					if( ! itemPubDate ){// /\/?(\d{1,4})\/(\d{1,2})\/(\d{0,2})/
+						var lDArray = itemLink.match(/\/?(\d{1,4})\/(\d{1,2})(?:\/(\d{0,2})|)/);
+						var curDate = new Date();
+						var da = curDate.getFullYear();
+						var db = "01";
+						var dc = "01";
+						if(lDArray && lDArray[1] && lDArray[2]){// looks like a date?
+							if(!lDArray[3]){ // when only 2 numbers in url, first might be the month or the year
+								if((1*lDArray[1]) <= 12){ // smaller than 13 must be a month (at least up to 2100)
+									lDArray.unshift('');
+									// if the month is or comes before this one assume publication this year
+									if((1*lDArray[2]) <= curDate.getMonth()+1){	lDArray[1]=da }
+									// if the month comes after this month publication must have been last year
+									else{ lDArray[1]=da-1 }
+								}
+							}
+							// extend 2 digit year
+							if((lDArray[1]+'').length == 2){ lDArray[1]= "20"+lDArray[1] }
+							if((lDArray[1]+'').length == 4 && 1*lDArray[1] <= da){
+								da = lDArray[1];
+								if( lDArray[2] && (lDArray[2]+'').length == 1){ lDArray[2]= "0"+lDArray[2] }
+								if( lDArray[2] && (1*lDArray[2]) <= curDate.getMonth()+1){
+									db = lDArray[2];
+									if((lDArray[3]+'').length == 1){ lDArray[3]= "0"+lDArray[3] }
+									if(lDArray[3] && 1*lDArray[3] <= curDate.getDate()){
+										dc = lDArray[3];
+									}
+								}
+								itemPubDate = da+"-"+db+"-"+dc+"T00:00:00+00:00"
+							}
+						}
+					}
+
+					// date 3 (any date in xml)
+
+					itemPubDate = itemPubDate || parser.testEleme( xml , ["modified","updated","atom:updated","published","created","dc:date","lastBuildDate","pubDate"] )
+					if( itemPubDate ){
+						itemPubDate = itemPubDate.trim();
+						if( isNaN( Date.parse( itemPubDate ))){
+							var chunks = itemPubDate.split(' '); // try correct 2 digit years
+							if(chunks[3] && chunks[3].length == 2){
+								chunks[3] = '20'+chunks[3]; itemPubDate = chunks.join(' ');
+							}
+							//itemPubDate = itemPubDate.split(' PM ').join(' '); // try correct PM
+						}
+
+					}
+
+					// fix further date errors
+
+					if(isNaN( Date.parse( itemPubDate ))){
+						if(lastDateError != task.reqestedUrl){
+							log('failure_date_error', red( itemPubDate ) + ':<br>' + ora( task.reqestedUrl ));
+							lastDateError = task.reqestedUrl;
+						}
+						itemPubDate = "Mon, 18 Mar 1974 00:00:00 +0000";
+					}else if( Date.now() <  Date.parse( itemPubDate ) ){
+						log('failure_future_date_error', red( itemPubDate ) + ' = ' + red( new Date( itemPubDate ).toLocaleTimeString() ) + '<br>' + ora( task.reqestedUrl ));
+						continue;
+					}
+					if(!(Date.parse( itemPubDate ) > window.oldestEntry)){
+						if( lastNoNew != task.reqestedUrl){
+							lastNoNew = task.reqestedUrl;
+							logNoNew   = true;
+						}
+						continue;
+					}
+
+					// did we have this exact title already?
+
+					if(!window.titleResult_set.has(itemTitle) ){
+						log("title_result", (++window.titleCount) + ' ' + ora(itemTitle));
+
+						// filter out titles with badwords
+
+						var stripTitle = itemTitle.slice(0).toLowerCase().replace(/[^a-z0-9]/g, " ");
+						var titleArray = stripTitle.split(' ');
+						var longEnough = titleArray.length >= window.pref.minimum_number_of_words_in_a_title;
+						window.badwords_regex.lastIndex = 0;
+						if( longEnough ){
+							if( !window.badwords_regex.test(stripTitle) ){
+
+								 window.titleResult.push( itemTitle );
+
+				 				 window['HTMLresultA'][0].unshift([
+								 /*[0]*/ 	  Date.parse( itemPubDate ),
+								 /*[1]*/		task.reqestedUrl,
+								 /*[2]*/		itemLink,
+								 /*[3]*/		itemTitle,
+								 /*[4]*/		task.requestOrigin ]);
+								itemPubDate = false;
+								itemLink    = false;
+								itemTitle   = false;
+								logNoNew    = false;
+								lastNoNew   = task.reqestedUrl;
+								newItem++;
+								if(newItem >= window.pref.items_per_rss_feed){break}
+
+							// describe errors and filtered items
+
+							}else{
+								//log('word_filter', red(++window.titlesFiltered) + ' titles discarded');
+							}
+						}else{
+							//log('to_short',(++window.toShortTitles)+' '+red(itemTitle));
+						}
+					}else{
+						//log('duplicate_title', (++window.duplicateTitles) + ' ' + red(itemTitle));
+					}
+				}
+				if(logNoNew){ log('no_new_items', (++noNewItems) + ' ' + bl(task.reqestedUrl) ) }
+				if(newItem){ log('considered', (++consideredFeeds) + ' ' + ora(task.reqestedUrl)) }
+			/*}catch(e){
+				window['rss_blacklist'].push( task.reqestedUrl.trim() );
+				//window.addDomainRss_blacklist(task.reqestedUrl.trim())
+				log('failure_try_parse_error', red(task.reqestedUrl) + ' : ' + e);
+				return;
+			}*/
+		}]
+
 }
+
+window.parseFeed = buildParser();
 
 // extend the rss list
 
@@ -1556,12 +1565,82 @@ window.progressInterval = function(){
 	}
 }
 
+// Random loading delays may cause simultanious arival of responses.
+// Combined with garbage collection The browser will have a hard time dealing with this and freeze up eventually.
+// Lowering the amount of requests only makes this occure less frequently.
+// For completely smooth opperation it would have to be as low as 1 request per second.
+// Agregating 10 800 feeds would take 3 hours while 10 per second would only take 18 minutes.
+// 20 per second or 0.05 seconds per request would be a nice goal.
+
+// The ping of localhost is obtained by failing to load a document.
+// the number of simultanious xmlHttpRequests is adjusted to ping average
+// The lag of the client and rendering engine is obtained by measuring inaccuracy of setTimeout
+// If the client is behaving poorly parsing jobs are gradually queued up
+// parsing the xmlHttpRequests response text is done asyncroniously
+
+// I found these things to be nesasary as random loading delays may cause n responses to arive simultaniously.
+
 // don't hurt the browser
 
-window.dat=window.oldDat = Date.now();
-
+window.dat = window.oldDat = window.localHostTest = Date.now();
 window.oldPain = 10000;
+window.port = 65535;
+window.pingArray = [50,50];
+window.pingAverage = 0;
 window.antiFreeze = function(){
+	if(Date.now() - window.localHostTest > 5000){
+		window.localHostTest = Date.now();
+		GM_xmlhttpRequest({
+		  method: "GET",
+		  url: "http://localhost:"+window.port,
+			timeout: ( window.pingArray.reduce(function(a,b){return a+b},0) )+20,
+			/*(( window.pingArray[0] + window.pingArray[1] + window.pingArray[2] + window.pingArray[3] + window.pingArray[4] + window.pingArray[5] + window.pingArray[6] + window.pingArray[7] + window.pingArray[8] + window.pingArray[9] ) / 10)+20,*/
+			ontimeout: function() {
+				var lastPing = Date.now() - window.localHostTest;
+				window.pingArray.push(lastPing);
+				if(window.pingArray.length>49){ window.pingArray.shift() };
+				window.pingAverage = ( window.pingArray.reduce(function(a,b){return a+b},0) ) /window.pingArray.length;
+				//window.pingAverage = ( window.pingArray[0] + window.pingArray[1] + window.pingArray[2] + window.pingArray[3] + window.pingArray[4] + window.pingArray[5] + window.pingArray[6] + window.pingArray[7] + window.pingArray[8] + window.pingArray[9] ) / 10;
+				//window.pingAverage = (window.pingArray.reduce(function(a,b){return a+b},0))/window.pingArray.length;
+				log('localhost','ping: '+lastPing+' average over last '+window.pingArray.length+': '+window.pingAverage);
+		    	log('localhost',red('connection timed out: 2 sec pause...'));
+				if(window.maxPending>5){
+					window.maxPending=window.maxPending-5;
+					log('localhost', red('reducing max request to: '+window.maxPending));
+				}
+				clearTimeout(window.antiFreezeTimer);
+				window.antiFreezeTimer = setTimeout( window.antiFreeze, 2000 );
+				window.oldDat = Date.now();
+				window.progressInterval();
+				window.parseFeed[1]();
+				window.parseFeed[1]();
+				//window.parseFeed[1]();
+				//window.parseFeed[1]();
+				//window.parseFeed[1]();
+		  },
+		  onload: function(response) {
+		    log('localhost',ora('acidentally hit website: changing port number to '+ window.port--));
+		  },
+		  onerror: function(response) {
+					var lastPing = Date.now() - window.localHostTest;
+					window.pingArray.push(lastPing);
+					if(window.pingArray.length>49){ window.pingArray.shift() };;
+					window.pingAverage = ( window.pingArray.reduce(function(a,b){return a+b},0) ) / window.pingArray.length;
+					//window.pingAverage = ( window.pingArray[0] + window.pingArray[1] + window.pingArray[2] + window.pingArray[3] + window.pingArray[4] + window.pingArray[5] + window.pingArray[6] + window.pingArray[7] + window.pingArray[8] + window.pingArray[9] ) / 10;
+					//window.pingAverage = (window.pingArray.reduce(function(a,b){return a+b},0))/pingArray.length;
+					log('localhost','ping: '+lastPing+' average over last '+window.pingArray.length+' : '+window.pingAverage);
+			    log('localhost',gr('local host is available'));
+				if(lastPing>(window.pingAverage+30)){
+					if(window.maxPending>10){
+						log('localhost',ora('prematurely decreasing max request to'+': '+(--window.maxPending)));
+					}
+				} else if(window.maxPending<500){
+					log('localhost', bl('increasing max request from '+ora(window.maxPending)+' to '+ora((++window.maxPending))));
+				}
+
+		  }
+		});
+	}
 	dat = Date.now();
 	if(dat-oldDat > 50000){
 		log('stages', red('<b>Aborting: browser froze for '+((dat-oldDat)/1000)+' seconds.<br> Please try restarting the browser</b>'));
@@ -1576,19 +1655,34 @@ window.antiFreeze = function(){
 	window.antiFreezeTimer = setTimeout( window.antiFreeze, delay )
 	//if (pain > 1000){log('pain','pain: ' + red(pain-1000)+', processing: '+ ora(window.rss.length))}
 
+
+
+/*
 	if(pain < 200){
 		window.maxPending = window.pref.maxPending;
 	}else if(pain < 400){
-		window.maxPending = window.pref.maxPending/2;
+		window.maxPending = Math.floor(window.maxPending/2);
 	}else if(pain < 1000){
-		window.maxPending = window.pref.maxPending/4;
+		window.maxPending = Math.floor(window.maxPending/4);
 	}else if(pain < 2000){
-		window.maxPending = window.maxPending/2;
+		window.maxPending = Math.floor(window.maxPending/2);
 	}else{
 		window.maxPending = 0;
 	}
+*/
+
 	window.progressInterval();
 	window.loadFeedsInterval();
+	if(pain > 2000){
+		 window.maxPending = 0;
+		 log('localhost',red('lag exceeds 2000 units, decreasing max request to zero'))
+	 }else{
+		 window.parseFeed[1]();
+	 }
+
+
+
+
 	/*if(Math.abs(window.oldPain-pain) > 100){
 		if(window.requestInterval){
 			clearInterval(window.requestInterval);
@@ -1608,22 +1702,25 @@ window.antiFreezeTimer = setTimeout(window.antiFreeze,50)
 
 window.g = GM_registerMenuCommand;
 window.c = function(x){return confirm(x);}
-
-g("monitor",function(){
+window.monitor = function(){
 	window.monitorMode = true;
-  window.qelm.innerHTML = '';
 	window.log = function(logConsole, logMessage){
 		if(window.disabledConsoles.indexOf(logConsole) == -1){
 			unsafeWindow.console_factory.write( ""+logConsole , ""+logMessage );
 		}
-  }
+	}
 	document.getElementById('consolecontainer').style.visibility = "visible";
-});
+	window.qelm.innerHTML = '';
+	window.localStorage['monitor'] = 1;
+}
+if(!!(window.localStorage['monitor']*1)){window.monitor()}
+g("monitor",window.monitor);
 g("news",function(){
 	window.log = function(){};
 	window.monitorMode = false;
 	window.scrollArray(100);
 	document.getElementById('consolecontainer').style.visibility = "hidden";
+	window.localStorage['monitor'] = 0;
 });
 g("configuration",function(){ location.href = confLink });
 g("reset blacklist",function(){
