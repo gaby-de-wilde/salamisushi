@@ -65,8 +65,8 @@ window.pref.blacklist_feed_with_script = false;
 window.pref.maxPending = 30;
 window.pref.feed_date = "on";
 window.pref.advanced_details = "off";
-window.pref.publish_news = "yes";
-window.pref.publish_news_url = "";
+window.pref.publish_news = "no";
+window.pref.publish_news_url = "http://example.com/publish.php";
 window.pref.publish_news_password = "";
 window.disabledConsoles = [];
 /* 'parse_html', 'suspended', 'rss_request_url', 'rss_response_url', 'no_new_items', 'failure_date_error', 'title_result',
@@ -666,6 +666,88 @@ window.removeUnsubscribe = function(elem){
 
 /////////////            ///////////////             /////////////////
 
+//window.removeUnsubscribe_set = function(elem){
+//	return !window.unsubscribe_set.has(elem[3]) && !window.unsubscribe_set.has(getDomain(elem[3]));
+//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // update localstorrage with fresh results
 window.updateStoredResult = function(s){
 
@@ -852,7 +934,7 @@ window.renewResults1 = function(forceUpdate){
 window.pendingBussy = false;
 window.pending_feeds = [];
 window.loadFeedsInterval = function(){
-	if(window.pending_feeds.length < window.maxPending && window.rss.length > 0){
+	if(!window.stopRequest && window.pending_feeds.length < window.maxPending && window.rss.length > 0){
 		var currentFeed   = window.rss.pop().trim();
 		var currentOrigin = "not defined";
 		if( currentFeed  && currentFeed.indexOf('#') > -1){
@@ -1587,15 +1669,21 @@ window.oldPain = 10000;
 window.port = 65535;
 window.pingArray = [50,50];
 window.pingAverage = 0;
+window.pingActive = false;
+window.stopRequest = false;
 window.antiFreeze = function(){
-	if(Date.now() - window.localHostTest > 5000){
+	window.stopRequest = false;
+	if(window.maxPending < 0){window.maxPending = 0}
+	if(Date.now() - window.localHostTest > 5000 && !window.pingActive){
+		window.pingActive = true;
 		window.localHostTest = Date.now();
 		GM_xmlhttpRequest({
 		  method: "GET",
-		  url: "http://localhost:"+window.port,
+		  url: /*"http://192.168.178.1"*/ "http://localhost:" +window.port,
 			timeout: ( window.pingArray.reduce(function(a,b){return a+b},0) )+20,
 			/*(( window.pingArray[0] + window.pingArray[1] + window.pingArray[2] + window.pingArray[3] + window.pingArray[4] + window.pingArray[5] + window.pingArray[6] + window.pingArray[7] + window.pingArray[8] + window.pingArray[9] ) / 10)+20,*/
 			ontimeout: function() {
+				window.pingActive = false;
 				var lastPing = Date.now() - window.localHostTest;
 				window.pingArray.push(lastPing);
 				if(window.pingArray.length>49){ window.pingArray.shift() };
@@ -1604,9 +1692,9 @@ window.antiFreeze = function(){
 				//window.pingAverage = (window.pingArray.reduce(function(a,b){return a+b},0))/window.pingArray.length;
 				log('localhost','ping: '+lastPing+' average over last '+window.pingArray.length+': '+window.pingAverage);
 		    	log('localhost',red('connection timed out: 2 sec pause...'));
+				window.stopRequest = true;
 				if(window.maxPending>5){
-					window.maxPending=window.maxPending-5;
-					log('localhost', red('reducing max request to: '+window.maxPending));
+					log('localhost', red('reducing max request to: '+(window.maxPending-=20)));
 				}
 				clearTimeout(window.antiFreezeTimer);
 				window.antiFreezeTimer = setTimeout( window.antiFreeze, 2000 );
@@ -1614,32 +1702,44 @@ window.antiFreeze = function(){
 				window.progressInterval();
 				window.parseFeed[1]();
 				window.parseFeed[1]();
-				//window.parseFeed[1]();
-				//window.parseFeed[1]();
-				//window.parseFeed[1]();
+				window.parseFeed[1]();
+				window.parseFeed[1]();
+				window.parseFeed[1]();
 		  },
 		  onload: function(response) {
-		    log('localhost',ora('acidentally hit website: changing port number to '+ window.port--));
+			  	window.pingActive = false;
+		    	log('localhost',ora('acidentally hit website: changing port number to '+ window.port--));
 		  },
 		  onerror: function(response) {
-					var lastPing = Date.now() - window.localHostTest;
-					window.pingArray.push(lastPing);
-					if(window.pingArray.length>49){ window.pingArray.shift() };;
-					window.pingAverage = ( window.pingArray.reduce(function(a,b){return a+b},0) ) / window.pingArray.length;
+			  	window.pingActive = false;
+				var lastPing = Date.now() - window.localHostTest;
+				window.pingArray.push(lastPing);
+				if(window.pingArray.length>49){ window.pingArray.shift() };;
+				window.pingAverage = ( window.pingArray.reduce(function(a,b){return a+b},0) ) / window.pingArray.length;
 					//window.pingAverage = ( window.pingArray[0] + window.pingArray[1] + window.pingArray[2] + window.pingArray[3] + window.pingArray[4] + window.pingArray[5] + window.pingArray[6] + window.pingArray[7] + window.pingArray[8] + window.pingArray[9] ) / 10;
 					//window.pingAverage = (window.pingArray.reduce(function(a,b){return a+b},0))/pingArray.length;
-					log('localhost','ping: '+lastPing+' average over last '+window.pingArray.length+' : '+window.pingAverage);
+				log('localhost','ping: '+lastPing+' average over last '+window.pingArray.length+' : '+window.pingAverage);
 			    log('localhost',gr('local host is available'));
 				if(lastPing>(window.pingAverage+30)){
 					if(window.maxPending>10){
-						log('localhost',ora('prematurely decreasing max request to'+': '+(--window.maxPending)));
+						log('localhost',ora('prematurely decreasing max request to'+': '+(window.maxPending-=2)));
 					}
-				} else if(window.maxPending<500){
-					log('localhost', bl('increasing max request from '+ora(window.maxPending)+' to '+ora((++window.maxPending))));
+				} else if(window.maxPending<100){
+					log('localhost', bl('increasing max request from '+ora(window.maxPending)+' to '+ora((window.maxPending+=20))));
 				}
-
+				window.progressInterval();
+				window.parseFeed[1]();
+				window.parseFeed[1]();
+				window.parseFeed[1]();
+				window.parseFeed[1]();
+				window.parseFeed[1]();
+				window.parseFeed[1]();
+				window.parseFeed[1]();
+				window.parseFeed[1]();
 		  }
 		});
+	}else if(Date.now() - window.localHostTest > 50000 && window.pingActive){
+		window.pingActive = false;
 	}
 	dat = Date.now();
 	if(dat-oldDat > 50000){
@@ -1651,7 +1751,7 @@ window.antiFreeze = function(){
 		return;
 	}*/
 	var pain = Math.floor(document.getElementsByTagName('meter')[0].value);
-	var delay = (pain < 2020)?10:(pain > 10000)?10000:pain-2000
+	var delay = (pain < 2020)?50:(pain > 10000)?10000:pain-2000
 	window.antiFreezeTimer = setTimeout( window.antiFreeze, delay )
 	//if (pain > 1000){log('pain','pain: ' + red(pain-1000)+', processing: '+ ora(window.rss.length))}
 
@@ -1674,8 +1774,8 @@ window.antiFreeze = function(){
 	window.progressInterval();
 	window.loadFeedsInterval();
 	if(pain > 2000){
-		 window.maxPending = 0;
-		 log('localhost',red('lag exceeds 2000 units, decreasing max request to zero'))
+		 //window.maxPending = 0;
+		 log('localhost',red('lag exceeds 2000 units, decreasing max request to '+(window.maxPending-=10)))
 	 }else{
 		 window.parseFeed[1]();
 	 }
@@ -1697,6 +1797,15 @@ window.antiFreeze = function(){
 	window.oldPain = pain;
 }
 window.antiFreezeTimer = setTimeout(window.antiFreeze,50)
+
+window.onpagehide = function (e) {
+	window.maxPendingOld = window.maxPending || 1;
+	window.maxPending = 0;
+}
+
+window.onpageshow = function (e) {
+	window.maxPending = window.maxPendingOld || 1;
+}
 
 //////// MENU COMMAND FUNCTIONS /////////////
 
@@ -1775,3 +1884,14 @@ g("display autodetect",function(){
 	},50)
 	GM_registerMenuCommand("feature requests / bug report", function(){ location.href = window.pref.bugTracker });
 }
+
+//show autosubscribed feeds without blacklist and without "unsubscribed feeds" & eraseOldItems;
+
+// http://jsfiddle.net/sqz2kgrr/
+// remove list from list, 1 list, 2 list to remove, 3 result
+
+// Object.keys(obj).filter(removeBadProps).reduce(function (map, key) { map[key] = obj[key]; return map; }, {})
+
+// draw graph's
+
+// rewrite the whole thing using sets/regex/arrays/strings and do it again
