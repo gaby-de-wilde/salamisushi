@@ -3,7 +3,7 @@
 // @namespace   AggregatorByGabyDeWilde
 // @include     http://opml.go-here.nl/internet.html
 // @include     http://opml.go-here.nl/configuration.html
-// @version     0.081
+// @version     0.088
 // @grant       GM_xmlhttpRequest
 // @grant       GM_getValue
 // @grant       GM_setValue
@@ -27,6 +27,64 @@ window.aggregatorLink   = "http://opml.go-here.nl/internet.html";            // 
 window.bugTracker       = "https://github.com/gaby-de-wilde/salamisushi/issues";
 id('install').innerHTML = '';                                                // remove installation instructions
 
+//////// GM MENU ENTRIES /////////////
+
+// we need these first so that things can be deleted if something goes wrong
+
+window.qelm = id('output');
+window.g = GM_registerMenuCommand;
+window.c = function(x){return confirm(x)}
+window.monitor = function(){
+	window.monitorMode = true;
+	window.log = function(logConsole, logMessage){
+		if(window.disabledConsoles.indexOf(logConsole) == -1){
+			unsafeWindow.console_factory.write( ""+logConsole , ""+logMessage );
+		}
+	}
+	document.getElementById('consolecontainer').style.visibility = "visible";
+	window.qelm.innerHTML = '';
+	window.localStorage['monitor'] = 1;
+}
+if(!!(window.localStorage['monitor']*1)){window.monitor()}
+g("monitor",window.monitor);
+g("news",function(){
+	window.log = function(){};
+	window.monitorMode = false;
+	window.scrollArray(100);
+	document.getElementById('consolecontainer').style.visibility = "hidden";
+	window.localStorage['monitor'] = 0;
+});
+g("configuration",function(){ location.href = confLink });
+g("# reset blacklist",function(){
+	if(c("Feeds with errors are blacklisted but these errors might not be permanent. They can be inside a news item or the webmaster can finally fix the bugs after you harass him by email for many years.\n\n Do you want to reset the blacklist?")){
+		window.rss_blacklist = ['http://example.com/feed/'];
+		setValue('rss_blacklist', 'http://example.com/feed/');
+		window.serviceGMstorage()}});
+g("# reset unsubscribed",function(){
+	if(c("Restore subscription to all unsubscribed feeds?")){
+		/*window.domainUnsubscribe=*/window.unsubscribe=['http://example.com/feed/'];
+		setValue('unsubscribe','http://example.com/feed/')}});
+g("# erase old news",function(){
+	if(c("Erase old news items?")){
+		window.HTMLresultA = [[]];
+		window.HTMLresultX = [];
+		localStorage.finalarray = [[0,'http://void','http://example.com','dummy title','void' ]];
+		id('output').innerHTML='';
+		window.oldestEntry=0}});
+g("# reset suspended",function(){
+	if(c("Erase suspended list?")){
+		window.rss_suspended = [0,'http://example.com/feed/'];
+		window.rss_suspended_url = ['http://example.com/feed/'];
+		window.suspended_regex = window.buildRegex(window.rss_suspended_url);
+		setValue('rss_suspended', [0,'http://example.com/feed/']);
+		window.serviceGMstorage()}});
+g("# erase autodetect",function(){
+	if(c("Erase auto detected list?")){
+		localStorage.autoDetect = []}});
+g("display autodetect",function(){
+	document.getElementsByTagName('body')[0].innerHTML =
+		'<div style="color:red;font-size:16px;"><ul><li>' + localStorage.autoDetect + '</li></ul></div>'})
+
 // load configuration
 
 window.urlArrays        = ['unsubscribe','rss_blacklist','rss_suspended','opml','rss'];
@@ -38,35 +96,14 @@ window.pref = JSON.parse(window.configuration);                       // parse c
 delete window.urlArrays;
 delete window.configuration;
 
-// legacy fix
-
-var y = window.localStorage.getItem('finalarray');
-
-if(y){
-	var x = JSON.parse(y);
-	if(x && x[0] && x[0][0]=='<tr><td>'){
-		for(var i=0;i<x.length;i++){
-			var w = [];
-			w[0]=Date.parse( x[i][1] ); // time stamp
-			w[1]=x[i][3];               // requestedUrl
-			w[2]=x[i][5];               // itemLink
-			w[3]=x[i][7];               // itemTitle
-			w[4]=x[i][10].split('</td><td>')[1].split('</td><tr>')[0]; // request origin
-			x[i] = w;
-		}
-		var sJSON = JSON.stringify(x);
-	  window.localStorage.setItem('finalarray' , sJSON);
-	}
-}
-
 // configuration not included in configuration page
 
 window.pref.blacklist_feed_with_script = false;
 window.pref.maxPending = 30;
 window.pref.feed_date = "on";
 window.pref.advanced_details = "off";
-window.pref.publish_news = "no";
-window.pref.publish_news_url = "http://example.com/publish.php";
+window.pref.publish_news = "yes";
+window.pref.publish_news_url = "";
 window.pref.publish_news_password = "";
 window.disabledConsoles = [];
 /* 'parse_html', 'suspended', 'rss_request_url', 'rss_response_url', 'no_new_items', 'failure_date_error', 'title_result',
@@ -106,15 +143,17 @@ window.br  = function(val){ return '<span style="color:#C6AE79">' + val + '</spa
 window.red = function(val){ return '<span style="color:red">'     + val + '</span>'; };
 window.bl  = function(val){ return '<span style="color:#00F9E0">' + val + '</span>'; };
 window.ora = function(val){ return '<span style="color:#FFA100">' + val + '</span>'; };
-// default to http protocol
 
+
+// default to http protocol
 
 [window.cleanProtocol,window.getDomain] = (function(){
 	var cleanProtocol_regex = new RegExp('^(?:\/\/|https?:\/\/|feed:\/\/?)','i');//^(\/\/|http:\/\/|https:\/\/|feed:\/\/)
 
 	return [
-		function(url){return url.replace(cleanProtocol_regex,'http://')},
+		function(url){return url?url.replace(cleanProtocol_regex,'http://'):"" },
 	 	function(url){
+			if(!url){return "http://example.com"}
 		  var b,c;
 			url = url.replace(cleanProtocol_regex,'');                            // strip protocol
 			url = url.split('/')[0];                                              // discard folders
@@ -194,13 +233,14 @@ if(window.rss_suspended.length > 0){
 	log('stages','checking '+ ora(window.rss_suspended.length)+ ' suspended feed dates');
 	var theNow = Date.now();
 	for(x=0;x<window.rss_suspended.length;x=x+2){
-		if(isNaN(window.rss_suspended[x])){log('suspended', window.rss_suspended[x]+' is not a date')}
-		if(window.rss_suspended[x]+172800000 < theNow){
+		if(isNaN(window.rss_suspended[x])){log('suspended', window.rss_suspended[x]+' is not a date');x--;continue}
+		if(+window.rss_suspended[x]+172800000 < theNow){
 			if(window.rss_suspended[x+1]){ log('suspended','clearing: '+ ora(window.rss_suspended[x+1])) };
 			window.rss_suspended.splice(x,2);x=x-2;
 		}
 	}
 }
+setValue('rss_suspended', window.rss_suspended);
 
 // create suspended regular expression
 
@@ -387,7 +427,7 @@ function stringToColor(str){
       g   = 0,
       b   = 0,
       /*turn the string into an array of numbers */
-      arr = str.split('').map(x=>x.charCodeAt(0));
+      arr = (' '+str).split('').map(x=>x.charCodeAt(0));
 
 	/*extend the array length to be a multiple of 3*/
   while(arr.length%3){arr.push(0)}
@@ -411,20 +451,21 @@ function stringToColor(str){
 // I push new items onto the array then sort it again,
 // the offset has to be corrected to preserve the view by finding the new index of the top item displayed
 
-document.getElementById('output').style.position = "fixed";
-document.getElementById('output').style.top = "14px";
+window.qelm.style.position = "absolute";
+window.qelm.style.top = "14px";
 document.getElementsByClassName('foo')[0].innerHTML = "";
-document.body.style.height = "120%";
-window.qelm = document.getElementById('output');
+//document.body.style.height = "500%";
 window.qelm.style.height = window.innerHeight+'px';//"500px"
 window.last_known_scroll_position = 0;
 window.currentOffset = 0;
 window.itemArray = window.localStorage.getItem('finalarray');
-if(window.itemArray){ window.itemArray = JSON.parse(window.itemArray) };
-var amount = ((qelm.clientHeight-120)/40)<<0;
+window.itemArray = window.itemArray?JSON.parse(window.itemArray):[[0,'http://void','http://example.com','dummy title','void' ]];
+
+var amount = 1000//((qelm.clientHeight-120)/41)<<0;
 window.theLastNinja = 0;
 window.clickHistory = {};
-
+window.oldPageNumber = 10000;
+window.pageNumber = 0;
 //for (i = 0; i < 100000+amount; ++i){ window.itemArray[i] = i+" "+i+" "+i+" "+i+" "+i+" "+i+" "+i+" "+i+" "+i; }
 
 
@@ -435,62 +476,86 @@ window.clickHistory = {};
 
 
 // updated array format
-window.lastScrollTime = Date.now();
-window.scrollTimeTravel = 1;
+//window.lastScrollTime = Date.now();
+//window.scrollTimeTravel = 1;
 window.scrollArray = function( scroll_pos ){
-	if(window.monitorMode || window.itemArray.length==0){ window.qelm.innerHTML = '';return }
-	var curScrollTime = Date.now(),
-		expiredScrollTime = curScrollTime-window.lastScrollTime,
-		accelerateTime = 0;
-	if(expiredScrollTime < 500){ window.scrollTimeTravel*=1.25 }else{ window.scrollTimeTravel=1 }
-	window.lastScrollTime = curScrollTime;
+	if(!scroll_pos){scroll_pos=window.last_known_scroll_position}
+	if(window.monitorMode || !window.itemArray || window.itemArray.length==0){ window.qelm.innerHTML = '';return }
+	//var curScrollTime = Date.now(),
+	//	expiredScrollTime = curScrollTime-window.lastScrollTime,
+	//	accelerateTime = 0;
+	//if(expiredScrollTime < 700){ window.scrollTimeTravel*=1.25 }else{ window.scrollTimeTravel=1 }
+	//window.lastScrollTime = curScrollTime;
 
 	//document.body.style.backgroundColor = 'rgb('+(window.scrollTimeTravel<<0)+','+(window.scrollTimeTravel<<0)+','+(window.scrollTimeTravel<<0)+')';
 	//setTimeout(function(){document.body.style.backgroundColor = "#000"},500);
 
 	// check if previous newest item in view is the same as the current one
 
-	if( window.theLastNinja != window.itemArray[window.currentOffset][0]){
+	//if( window.theLastNinja != window.itemArray[window.currentOffset][0]){
 
 		// if the time stamp is not the same, look at older items until either a matching date is found or an older item
 
-		for(var x=window.currentOffset; x < window.itemArray.length; x++ ){
-			if( window.theLastNinja == itemArray[x][0] || window.theLastNinja > itemArray[x][0] ){
-				window.currentOffset = x;
-				x = window.itemArray.length;
-			}
-		}
-	}
+	//	for(var x=window.currentOffset; x < window.itemArray.length; x++ ){
+	//		if( window.theLastNinja == itemArray[x][0] || window.theLastNinja > itemArray[x][0] ){
+	//			window.currentOffset = x;
+	//			x = window.itemArray.length;
+	//		}
+	//	}
+	//}
 
 	// are we going up or down?
 
-  if (scroll_pos > 100) {
-    window.currentOffset += window.scrollTimeTravel; //((scroll_pos - 100) / 20)+window.scrollTimeTravel;
-  } else if (scroll_pos < 100) {
-    window.currentOffset -= window.scrollTimeTravel; //((100 - scroll_pos) / 20)+window.scrollTimeTravel;
-  }
-	window.currentOffset = window.currentOffset<<0;
+
+	document.body.style.height = window.itemArray.length*43+"px";
+
+
+    //window.currentOffset += ((scroll_pos - 1500) / 10)*window.scrollTimeTravel-4; //((scroll_pos - 500) / 20)+window.scrollTimeTravel;
+//} else if (scroll_pos < 1500) {
+//    window.currentOffset -= ((1500 - scroll_pos) / 10)*window.scrollTimeTravel-4; //((500 - scroll_pos) / 20)+window.scrollTimeTravel;
+  //}
+	window.currentOffset = (scroll_pos/43)<<0;
+	window.pageNumber=(window.currentOffset/30)<<0;
+
+	console.log('page: '+window.pageNumber);
+	console.log('offset page top: '+window.pageNumber*30*43);
+	console.log('offset scroll: '+scroll_pos);
+
+/*
+
+
+	if (scroll_pos < (window.pageNumber+1)*1000*43 && scroll_pos > (window.pageNumber)*1000*43) { return }
 
 	// must not attempt to display things outside the range
- 	if (window.currentOffset >= window.itemArray.length - amount) {
-    	window.currentOffset = window.itemArray.length - amount;
-		window.scrollTimeTravel=1;
-  	} else if (window.currentOffset < 0) {
-    	window.currentOffset = 0;
-		window.scrollTimeTravel=1;
-  	}
+	if(window.pageNumber >= window.itemArray.length/1000 && scroll_pos > window.pageNumber*1000*43 ){ return }
+
+	if(window.oldPageNumber == window.pageNumber){return}
+
+*/
+
+
+
+	window.oldPageNumber = window.pageNumber;
+	console.log(window.pageNumber);
+ 	//if (window.currentOffset >= window.itemArray.length - amount) {
+    //	window.currentOffset = window.itemArray.length - amount;
+	//	window.scrollTimeTravel=1;
+  	//} else if (window.currentOffset < 0) {
+    //	window.currentOffset = 0;
+	//	window.scrollTimeTravel=1;
+  	//}
 
 	// number of items before top item displayed
-  	var skiped = window.currentOffset<1?"top":"&laquo; "+ (window.currentOffset);
+  	var skiped = 'top';//window.pageNumber<1?"top":"&laquo; "+ (window.pageNumber);
 
 	// number of items beyond bottom item displayed
-  	var togo = window.currentOffset+amount>=window.itemArray.length?"end":(window.itemArray.length-window.currentOffset-amount)+" &raquo;";
+  	var togo = window.pageNumber//window.oldPageNumber*1000>=window.itemArray.length?"end":(window.itemArray.length-window.currentOffset-amount)+" &raquo;";
 
 	// extract array sub set
-	var subset = window.itemArray.slice(window.currentOffset, window.currentOffset + amount);
+	var subset = window.itemArray.slice(window.pageNumber*30,(window.pageNumber+1)*60);
 
 	// keep track of the top item
-	if(subset[0]){ window.theLastNinja = subset[0][0] }
+	//if(subset[0]){ window.theLastNinja = subset[0][0] }
 
 	// make html from array
 
@@ -610,10 +675,11 @@ window.scrollArray = function( scroll_pos ){
 	}
 
 	// display html
-	window.qelm.innerHTML = skiped + "<table>" + outputResultHTML + "</table>"+togo;
+	window.qelm.style.top = (window.pageNumber*30*43)+"px";
+	window.qelm.innerHTML = skiped + '<table>' + outputResultHTML + "</table>"+togo;
 
 	// correct scroll position
-  window.scrollTo(0, 100);
+  //window.scrollTo(0, 1500);
 
 	// make unsubscribe buttons
 	var buttons = document.getElementsByTagName('button');
@@ -642,7 +708,7 @@ document.addEventListener("click", function(e){
 
 window.buildTable = function(s){
 	//window.itemArray = s;
-	scrollArray(100);
+	scrollArray(0);
 }
 
 // sort frequent words by frequency
@@ -753,6 +819,7 @@ window.updateStoredResult = function(s){
 
 	// merge old results
 
+if(!window.itemArray){ window.itemArray = [[0,'http://void','http://example.com','dummy title','void' ]] }
 	if(window.itemArray){
 		log('parse_html', 'merging '+gr(s.length)+' new news with '+gr(window.itemArray.length)+' old news');
 		for(var x=0;x<s.length;x++){
@@ -931,45 +998,57 @@ window.renewResults1 = function(forceUpdate){
 }
 
 // load the feeds
+window.lastReqest = '';
 window.pendingBussy = false;
 window.pending_feeds = [];
-window.loadFeedsInterval = function(){
-	if(!window.stopRequest && window.pending_feeds.length < window.maxPending && window.rss.length > 0){
-		var currentFeed   = window.rss.pop().trim();
-		var currentOrigin = "not defined";
-		if( currentFeed  && currentFeed.indexOf('#') > -1){
-			currentFeed   = currentFeed.split('#');
-			currentOrigin = currentFeed[1].trim();
-			currentFeed   = currentFeed[0].trim();
-		}
+window.loadFeedsInterval = (function(){
+	var get_domain = window.getDomain;
+	var clean_protocol = window.cleanProtocol;
+	var rssList = [];
+	getRssLength = function(){
+		return rssList.length + window.rss.length;
+	}
 
+	return function(){
+		if(rssList.length === 0 && window.rss.length > 0){
+			rssList = window.rss.splice(-100,100)
+		}
+	if(!window.stopRequest && window.pending_feeds.length < window.maxPending && getRssLength() > 0){
+		var currentFeed = rssList.pop().trim();
+		if(!currentFeed){ return }
+		if( currentFeed.indexOf('#') > -1){
+			currentFeed       = currentFeed.split('#');
+			var currentOrigin = currentFeed[1].trim();
+			currentFeed       = currentFeed[0].trim();
+		}else{
+			var currentOrigin = "not defined";
+	  }
 		// skip blacklisted, unsubscribed and suspended feed urls
 
 		window.rss_blacklist_url_regex.lastIndex = 0;
 		window.unsubscribe_url_regex.lastIndex = 0;
 		window.suspended_regex.lastIndex = 0;
-		var baseProtocol = window.cleanProtocol(currentFeed.trim());
-		if(baseProtocol &&
+		var baseProtocol = clean_protocol(currentFeed);
+		if(window.lastReqest != currentFeed && baseProtocol &&
 			!window.rss_blacklist_url_regex.test(baseProtocol) &&
 			!window.unsubscribe_url_regex.test(baseProtocol) &&
 			!window.suspended_regex.test(baseProtocol)){
-
 			// skip blacklisted and unsubscribed domains
 
-			var feedDomain = getDomain(currentFeed);
+			var feedDomain = get_domain(currentFeed);
 			window.rss_blacklist_domain_regex.lastIndex = 0;
 			window.unsubscribe_domain_regex.lastIndex = 0;
 			if(feedDomain &&
 				!window.rss_blacklist_domain_regex.test(feedDomain) &&
 				!window.unsubscribe_domain_regex.test(feedDomain)){
-
+				window.lastReqest = currentFeed;
 				window.feedsRequested++;
 				log('rss_request_url', window.feedsRequested + ' ' + ora(currentFeed));
 				(function (reqestUrl,requestOrigin) {
 					window.pending_feeds.push(
 					[Date.now(),reqestUrl,GM_xmlhttpRequest({
 						method:     'GET',
-						url:        window.cleanProtocol(reqestUrl),
+						url:        clean_protocol(reqestUrl),
 						onload:     function(response){
 													window.parseFeed[0]( response, reqestUrl, requestOrigin )
 												},
@@ -1005,12 +1084,13 @@ window.loadFeedsInterval = function(){
 			loadFeedsInterval();
 		}
 	}
-	if(window.pending_feeds.length < window.maxPending && window.rss.length > 0){
+	if(window.pending_feeds.length < window.maxPending && getRssLength() > 0){
 		//loadFeedsInterval();
 		setTimeout(window.loadFeedsInterval, window.pref.rss_loading_delay*1)
 	}
 }
 
+})()
 // remove response from pending feed list
 
 window.removePending = function(x){
@@ -1080,7 +1160,7 @@ buildParser = function(){
 
 		var testElmRegex = function(xml , testThis){
 			for(var x=0;x<testThis.length;x++){
-				regexParser[testThis[x]] = regexParser[testThis[x]] || new RegExp("<" + testThis[x] + "[^>]*?>([^<]+)","g");
+				regexParser[testThis[x]] = regexParser[testThis[x]] || new RegExp("<" + testThis[x] + "[^>]*?>([^<]+)","gm");
 				var val = regexParser[testThis[x]].exec(xml);
 				regexParser[testThis[x]].lastIndex = 0;
 				if(val != null){
@@ -1112,14 +1192,22 @@ buildParser = function(){
 			var pain = Math.floor(document.getElementsByTagName('meter')[0].value);
 			log('pending_parsing', 'browser lag is '+pain+' (lower is better)');
 			log('pending_parsing', ora(pendingParser.length) +' responses awaiting parsing' );
+
+
+			do{
+
 			var task = pendingParser.pop();
 			lastParse = Date.now();
 
+			window.feedResponses++;
+			setTimeout(log,0,'rss_response_url', window.feedResponses + ' ' + gr(task.response.finalUrl));
+
 			setTimeout((function(x){
-				window.feedResponses++;
-				log('rss_response_url', window.feedResponses + ' ' + gr(task.response.finalUrl));
 				window.removePending(x);
 			}).bind(undefined, task.reqestedUrl),0);
+
+			}while(pendingParser.length > 50)
+
 
 			// get rid of everything with a <script tag in it
 
@@ -1154,6 +1242,11 @@ buildParser = function(){
 						}
 					}while(++i)
 				}
+			}
+
+			// deal with blogspot bullshit link attributes
+			if(task.response.finalUrl.indexOf('.blogspot.') != -1){
+						task.response.responseText = task.response.responseText.split(/<link.+application\/atom[^>]+>/).join('');
 			}
 
 			// try to use the dom parser
@@ -1377,9 +1470,18 @@ window.parseFeed = buildParser();
 
 // extend the rss list
 
+window.rssPushFeeds = [];
 window.rssPush = function(newFeedUrl){
 	if(window.rss == undefined){ window.rss = [newFeedUrl]; return; }
-	if(window.rss.indexOf( newFeedUrl ) == -1){ window.rss.push( newFeedUrl ); }
+	if(window.rss.indexOf( newFeedUrl ) === -1 && window.rssPushFeeds.indexOf( newFeedUrl ) === -1){
+		window.rssPushFeeds.push( newFeedUrl );
+		setTimeout(function(){
+			if(window.rssPushFeeds.length > 0){
+				window.rss = window.rss.concat(window.rssPushFeeds);
+				window.rssPushFeeds = [];
+			}
+		},7000)
+	}
 }
 
 // request opml files
@@ -1412,6 +1514,7 @@ window.opmlReadingIntervalFunction = function(){
 						}
 					}
 					var temp_listLength = result_list.length;
+					result_list = Array.from(new Set(result_list));
 					window.rss = window.rss.concat(result_list);
 					countInOpml += temp_listLength;
 					log('stages','receaved rss list ' + gr(window.opmlResponses) + ' with ' + gr(temp_listLength) + ' feeds for a total of ' + bl(countInOpml) + ' feeds');
@@ -1429,6 +1532,7 @@ window.opmlReadingIntervalFunction = function(){
 				log('stages','receaved opml ' + gr(window.opmlResponses) + ' with ' + gr(outlineLength) + ' outlines for a total of ' + bl(countInOpml) + ' feeds');
 				if(outlineLength == 0){ log('opml_failure','no outlines found ' + red( currentOPML ) );	return;
 				}
+
 				for ( var k = 0; k < outlineLength; k++ ) {
 					if(outline[k].hasAttribute('xmlUrl')){
 						var xmlUrl = outline[k].getAttribute('xmlUrl');
@@ -1483,6 +1587,7 @@ window.ApplicationStages = {
 countInOpml += window.rss.length;
 log('stages','loading ' + gr(window.rss.length) + ' user defined feeds for a total of ' + bl(countInOpml) + ' feeds');
 for(x = window.rss.length; x>=0 ; x--){	window.rss[x] = window.rss[x] + "#user defined"; }
+window.rss = Array.from(new Set(window.rss));
 //loadFeeds('load local storage feeds');
 
 window.progressInterval = function(){
@@ -1541,10 +1646,10 @@ window.progressInterval = function(){
 			log('publishing','publishing....' + bl(window.publish_time));
 
 			var subset = JSON.parse(localStorage.getItem('finalarray', false));
-
+			if(!subset){return}
 			// make html from array
 
-			var outputResult = '';
+			var outputResult = '',domainIndicator;
 
 			for(var x=0;x<subset.length&&x<3000;x++){
 
@@ -1566,10 +1671,23 @@ window.progressInterval = function(){
 					if(subset[x][4] == "not defined"){   itemClass += ' autodetect'  }
 					itemClass += '"';
 
+
+					// try to obtain the host url
+
+					if(subset[x][2].indexOf('feedproxy.google.com')>0
+					&& subset[x][2].indexOf('feedproxy.google.com')<9
+					&& subset[x][2].split('/')[4] ){
+						domainIndicator = subset[x][2].split('/')[4];
+					}else{
+						domainIndicator = getDomain(subset[x][2]);
+					}
+
 					outputResult +=
 						'<tr><td>' +
 						(new Date(subset[x][0])+'') +
-						'</td><td></td><td><a href="'+
+						'</td><td>'+
+						domainIndicator+
+						'</td><td><a href="'+
 						subset[x][2]+
 						'" '+
 						itemClass +
@@ -1680,24 +1798,31 @@ window.antiFreeze = function(){
 		GM_xmlhttpRequest({
 		  method: "GET",
 		  url: /*"http://192.168.178.1"*/ "http://localhost:" +window.port,
-			timeout: ( window.pingArray.reduce(function(a,b){return a+b},0) )+20,
+			timeout: ((( window.pingArray.reduce(function(a,b){return a+b},0) )/ window.pingArray.length)+200)/*   &2047   */,
 			/*(( window.pingArray[0] + window.pingArray[1] + window.pingArray[2] + window.pingArray[3] + window.pingArray[4] + window.pingArray[5] + window.pingArray[6] + window.pingArray[7] + window.pingArray[8] + window.pingArray[9] ) / 10)+20,*/
 			ontimeout: function() {
 				window.pingActive = false;
+				/*
 				var lastPing = Date.now() - window.localHostTest;
 				window.pingArray.push(lastPing);
-				if(window.pingArray.length>49){ window.pingArray.shift() };
+				if(window.pingArray.length>400){ window.pingArray.shift() };
 				window.pingAverage = ( window.pingArray.reduce(function(a,b){return a+b},0) ) /window.pingArray.length;
+
 				//window.pingAverage = ( window.pingArray[0] + window.pingArray[1] + window.pingArray[2] + window.pingArray[3] + window.pingArray[4] + window.pingArray[5] + window.pingArray[6] + window.pingArray[7] + window.pingArray[8] + window.pingArray[9] ) / 10;
 				//window.pingAverage = (window.pingArray.reduce(function(a,b){return a+b},0))/window.pingArray.length;
 				log('localhost','ping: '+lastPing+' average over last '+window.pingArray.length+': '+window.pingAverage);
-		    	log('localhost',red('connection timed out: 2 sec pause...'));
+				*/
+		    	log('localhost',red('connection timed out: 5 sec pause...'));
 				window.stopRequest = true;
 				if(window.maxPending>5){
-					log('localhost', red('reducing max request to: '+(window.maxPending-=20)));
+					if(window.maxPending>20){
+						log('localhost', red('reducing max request to: '+(window.maxPending-=20)));
+					}else{
+						log('localhost', red('reducing max request to: '+(window.maxPending=0)));
+					}
 				}
 				clearTimeout(window.antiFreezeTimer);
-				window.antiFreezeTimer = setTimeout( window.antiFreeze, 2000 );
+				window.antiFreezeTimer = setTimeout( window.antiFreeze, 5000 );
 				window.oldDat = Date.now();
 				window.progressInterval();
 				window.parseFeed[1]();
@@ -1714,18 +1839,19 @@ window.antiFreeze = function(){
 			  	window.pingActive = false;
 				var lastPing = Date.now() - window.localHostTest;
 				window.pingArray.push(lastPing);
-				if(window.pingArray.length>49){ window.pingArray.shift() };;
+				if(window.pingArray.length>60){ window.pingArray.shift() };;
 				window.pingAverage = ( window.pingArray.reduce(function(a,b){return a+b},0) ) / window.pingArray.length;
 					//window.pingAverage = ( window.pingArray[0] + window.pingArray[1] + window.pingArray[2] + window.pingArray[3] + window.pingArray[4] + window.pingArray[5] + window.pingArray[6] + window.pingArray[7] + window.pingArray[8] + window.pingArray[9] ) / 10;
 					//window.pingAverage = (window.pingArray.reduce(function(a,b){return a+b},0))/pingArray.length;
 				log('localhost','ping: '+lastPing+' average over last '+window.pingArray.length+' : '+window.pingAverage);
-			    log('localhost',gr('local host is available'));
 				if(lastPing>(window.pingAverage+30)){
 					if(window.maxPending>10){
 						log('localhost',ora('prematurely decreasing max request to'+': '+(window.maxPending-=2)));
 					}
 				} else if(window.maxPending<100){
 					log('localhost', bl('increasing max request from '+ora(window.maxPending)+' to '+ora((window.maxPending+=20))));
+				}else{
+			  	log('localhost',gr('local host is available, max pending: '+ gr(window.maxPending)));
 				}
 				window.progressInterval();
 				window.parseFeed[1]();
@@ -1751,7 +1877,7 @@ window.antiFreeze = function(){
 		return;
 	}*/
 	var pain = Math.floor(document.getElementsByTagName('meter')[0].value);
-	var delay = (pain < 2020)?50:(pain > 10000)?10000:pain-2000
+	var delay = (pain < 2020)?500:(pain > 10000)?10000:pain-2000
 	window.antiFreezeTimer = setTimeout( window.antiFreeze, delay )
 	//if (pain > 1000){log('pain','pain: ' + red(pain-1000)+', processing: '+ ora(window.rss.length))}
 
@@ -1773,9 +1899,9 @@ window.antiFreeze = function(){
 
 	window.progressInterval();
 	window.loadFeedsInterval();
-	if(pain > 2000){
+	if(pain > 5000){
 		 //window.maxPending = 0;
-		 log('localhost',red('lag exceeds 2000 units, decreasing max request to '+(window.maxPending-=10)))
+		 log('localhost',red('rendering lag exceeds 5000 units, decreasing max request to '+(window.maxPending-=10)))
 	 }else{
 		 window.parseFeed[1]();
 	 }
@@ -1796,7 +1922,7 @@ window.antiFreeze = function(){
 	*/
 	window.oldPain = pain;
 }
-window.antiFreezeTimer = setTimeout(window.antiFreeze,50)
+window.antiFreezeTimer = setTimeout(window.antiFreeze,500)
 
 window.onpagehide = function (e) {
 	window.maxPendingOld = window.maxPending || 1;
@@ -1807,64 +1933,6 @@ window.onpageshow = function (e) {
 	window.maxPending = window.maxPendingOld || 1;
 }
 
-//////// MENU COMMAND FUNCTIONS /////////////
-
-window.g = GM_registerMenuCommand;
-window.c = function(x){return confirm(x);}
-window.monitor = function(){
-	window.monitorMode = true;
-	window.log = function(logConsole, logMessage){
-		if(window.disabledConsoles.indexOf(logConsole) == -1){
-			unsafeWindow.console_factory.write( ""+logConsole , ""+logMessage );
-		}
-	}
-	document.getElementById('consolecontainer').style.visibility = "visible";
-	window.qelm.innerHTML = '';
-	window.localStorage['monitor'] = 1;
-}
-if(!!(window.localStorage['monitor']*1)){window.monitor()}
-g("monitor",window.monitor);
-g("news",function(){
-	window.log = function(){};
-	window.monitorMode = false;
-	window.scrollArray(100);
-	document.getElementById('consolecontainer').style.visibility = "hidden";
-	window.localStorage['monitor'] = 0;
-});
-g("configuration",function(){ location.href = confLink });
-g("reset blacklist",function(){
-	if(c("Feeds with errors are blacklisted but these errors might not be permanent. They can be inside a news item or the webmaster can finally fix the bugs after you harass him by email for many years.\n\n Do you want to reset the blacklist?")){
-		window.rss_blacklist = ['http://example.com/feed/'];
-		setValue('rss_blacklist', '');
-		window.serviceGMstorage()}});
-g("reset unsubscribed",function(){
-	if(c("Restore subscription to all unsubscribed feeds?")){
-		/*window.domainUnsubscribe=*/window.unsubscribe=['http://example.com/feed/'];
-		setValue('unsubscribe','')}});
-g("erase old news",function(){
-	if(c("Erase old news items?")){
-		window.HTMLresultA = [[]];
-		window.HTMLresultX = [];
-		localStorage.removeItem('finalarray');
-		id('output').innerHTML='';
-		window.oldestEntry=0}});
-g("reset suspended",function(){
-	if(c("Erase suspended list?")){
-		window.rss_suspended = [0,'http://example.com/feed/'];
-		window.rss_suspended_url = ['http://example.com/feed/'];
-		/*window.rss_suspended.forEach(function(x){
-			x=window.cleanProtocol(x.trim());
-			if(!x.startsWith('http')){ window.rss_suspended_url.push(x) }
-		})*/
-		window.suspended_regex = window.buildRegex(window.rss_suspended_url);
-		setValue('rss_suspended', [0,'http://example.com/feed/']);
-		window.serviceGMstorage()}});
-g("erase autodetect",function(){
-	if(c("Erase auto detected list?")){
-		localStorage.autoDetect = []}});
-g("display autodetect",function(){
-	document.getElementsByTagName('body')[0].innerHTML =
-		'<div style="color:red;font-size:16px;"><ul><li>' + localStorage.autoDetect + '</li></ul></div>'})
 }else{
 
 	// load old configuration into the form
@@ -1884,14 +1952,3 @@ g("display autodetect",function(){
 	},50)
 	GM_registerMenuCommand("feature requests / bug report", function(){ location.href = window.pref.bugTracker });
 }
-
-//show autosubscribed feeds without blacklist and without "unsubscribed feeds" & eraseOldItems;
-
-// http://jsfiddle.net/sqz2kgrr/
-// remove list from list, 1 list, 2 list to remove, 3 result
-
-// Object.keys(obj).filter(removeBadProps).reduce(function (map, key) { map[key] = obj[key]; return map; }, {})
-
-// draw graph's
-
-// rewrite the whole thing using sets/regex/arrays/strings and do it again
